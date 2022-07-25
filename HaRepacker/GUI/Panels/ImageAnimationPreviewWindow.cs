@@ -154,6 +154,8 @@ namespace HaRepacker.GUI.Panels
 						Tag = obj.FullPath
 					};
 
+					dxObject.Source = canvasProperty;
+
 					animationFrames.Add(dxObject);
 				}
 			}

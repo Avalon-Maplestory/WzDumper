@@ -5,17 +5,19 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 
+using MapleLib.WzLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaSharedLibrary.Render.DX
 {
     public class DXObject : IDXObject
     {
-        protected Texture2D texture;
+        public Texture2D texture;
         private readonly int _x;
         private readonly int _y;
 
@@ -35,13 +37,9 @@ namespace HaSharedLibrary.Render.DX
             this.delay = delay;
         }
 
-        public DXObject(System.Drawing.PointF point, Texture2D texture, int delay = 0)
+        public DXObject(System.Drawing.PointF point, Texture2D texture, int delay = 0) :
+            this((int)point.X, (int)point.Y, texture, delay)
         {
-            this._x = (int) point.X;
-            this._y = (int)point.Y;
-            this.texture = texture;
-
-            this.delay = delay;
         }
 
         /// <summary>
@@ -120,5 +118,7 @@ namespace HaSharedLibrary.Render.DX
         public int Height { get { return texture.Height; } }
 
         public object Tag { get { return _Tag; } set { this._Tag = value; } }
+
+        public object Source { get; set; }
     }
 }

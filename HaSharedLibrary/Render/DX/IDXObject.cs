@@ -45,5 +45,7 @@ namespace HaSharedLibrary.Render.DX
         /// Tag - For storing anything
         /// </summary>
         object Tag { get; set; }
+
+        object Source { get; set; }
     }
 }

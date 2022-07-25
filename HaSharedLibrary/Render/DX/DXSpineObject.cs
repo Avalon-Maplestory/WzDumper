@@ -13,7 +13,7 @@ namespace HaSharedLibrary.Render.DX
 {
     public class DXSpineObject : IDXObject
     {
-        private readonly WzSpineObject spineObject;
+        public readonly WzSpineObject spineObject;
         private readonly int _x;
         private readonly int _y;
         private System.Drawing.PointF _origin;
@@ -107,5 +107,7 @@ namespace HaSharedLibrary.Render.DX
         public int Width { get { return (int)spineObject.skeleton.Data.Width; } }
         public int Height { get { return (int)spineObject.skeleton.Data.Height; } }
         public object Tag { get { return _Tag; } set { this._Tag = value; } }
+
+        public object Source { get; set; }
     }
 }

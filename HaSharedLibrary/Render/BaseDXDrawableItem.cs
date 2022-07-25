@@ -1,4 +1,5 @@
 ﻿using HaSharedLibrary.Render.DX;
+using MapleLib.WzLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
@@ -17,15 +18,17 @@ namespace HaSharedLibrary.Render.DX
     public class BaseDXDrawableItem : IBaseDXDrawableItem
     {
         // multiple frame
-        private readonly List<IDXObject> frames;
+        public readonly List<IDXObject> frames;
         private int currFrame = 0;
         private int lastFrameSwitchTime = 0;
 
         // 1 frame
-        protected bool flip;
+        public bool flip;
         protected readonly bool notAnimated;
         private readonly IDXObject frame0;
 
+        // general
+        public object source;
 
         /// <summary>
         /// The last frame drawn
@@ -63,10 +66,10 @@ namespace HaSharedLibrary.Render.DX
             }
             else
             {
-                this.frames = frames;
                 notAnimated = false;
                 this.flip = flip;
             }
+            this.frames = frames;
             this._Position = new Point(0, 0);
         }
 
@@ -85,7 +88,7 @@ namespace HaSharedLibrary.Render.DX
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected IDXObject GetCurrentFrame(int TickCount)
+        public IDXObject GetCurrentFrame(int TickCount)
         {
             if (notAnimated)
                 return frame0;

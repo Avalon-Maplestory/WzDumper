@@ -105,14 +105,18 @@ namespace HaCreator.MapSimulator
                     WzSpineObject spineObject = (WzSpineObject)source.MSTagSpine;
                     System.Drawing.PointF origin = property.GetCanvasOriginPosition();
 
-                    frames.Add(new DXSpineObject(spineObject, x, y, origin));
+                    var dxObject = new DXSpineObject(spineObject, x, y, origin);
+                    dxObject.Source = spineObject;
+                    frames.Add(dxObject);
                 }
                 else if (source.MSTag != null)
                 {
                     Texture2D texture = (Texture2D)source.MSTag;
                     System.Drawing.PointF origin = property.GetCanvasOriginPosition();
 
-                    frames.Add(new DXObject(x - (int)origin.X, y - (int)origin.Y, texture));
+                    var dxObject = new DXObject(x - (int)origin.X, y - (int)origin.Y, texture, 0);
+                    dxObject.Source = property;
+                    frames.Add(dxObject);
                 }
                 else // fallback
                 {
@@ -180,14 +184,18 @@ namespace HaCreator.MapSimulator
                             WzSpineObject spineObject = (WzSpineObject)frameProp.MSTagSpine;
                             System.Drawing.PointF origin = frameProp.GetCanvasOriginPosition();
 
-                            frames.Add(new DXSpineObject(spineObject, x, y, origin, delay));
+                            var dxObject = new DXSpineObject(spineObject, x, y, origin, delay);
+                            dxObject.Source = spineObject;
+                            frames.Add(dxObject);
                         }
                         else if (frameProp.MSTag != null)
                         {
                             Texture2D texture = (Texture2D)frameProp.MSTag;
                             System.Drawing.PointF origin = frameProp.GetCanvasOriginPosition();
 
-                            frames.Add(new DXObject(x - (int)origin.X, y - (int)origin.Y, texture, delay));
+                            var dxObject = new DXObject(x - (int)origin.X, y - (int)origin.Y, texture, delay);
+                            dxObject.Source = frameProp.GetLinkedWzImageProperty();
+                            frames.Add(dxObject);
                         }
                         else
                         {
@@ -219,6 +227,7 @@ namespace HaCreator.MapSimulator
         public static BaseDXDrawableItem CreateMapItemFromProperty(TexturePool texturePool, WzImageProperty source, int x, int y, Point mapCenter, GraphicsDevice device, ref List<WzObject> usedProps, bool flip)
         {
             BaseDXDrawableItem mapItem = new BaseDXDrawableItem(LoadFrames(texturePool, source, x, y, device, ref usedProps), flip);
+            mapItem.source = source;
             return mapItem;
         }
 
@@ -386,7 +395,7 @@ namespace HaCreator.MapSimulator
             List<IDXObject> frames = new List<IDXObject>(); // All frames "stand", "speak" "blink" "hair", "angry", "wink" etc
 
             //string portalType = portalInstance.pt;
-            //int portalId = Program.InfoManager.PortalIdByType[portalInstance.pt];
+            //int portalId = WzFileManager.Instance.InfoManager.PortalIdByType[portalInstance.pt];
 
             WzSubProperty portalTypeProperty = (WzSubProperty)gameParent[portalInstance.pt];
             if (portalTypeProperty == null)
@@ -584,9 +593,9 @@ namespace HaCreator.MapSimulator
                         font, new System.Drawing.SolidBrush(color_foreGround), 50, 20);
 
                     // Map mark
-                    if (Program.InfoManager.MapMarks.ContainsKey(mapBoard.MapInfo.mapMark))
+                    if (WzFileManager.Instance.InfoManager.MapMarks.ContainsKey(mapBoard.MapInfo.mapMark))
                     {
-                        System.Drawing.Bitmap mapMark = Program.InfoManager.MapMarks[mapBoard.MapInfo.mapMark];
+                        System.Drawing.Bitmap mapMark = WzFileManager.Instance.InfoManager.MapMarks[mapBoard.MapInfo.mapMark];
                         graphics.DrawImage(mapMark.ToImage(), MAPMARK_IMAGE_ALIGN_LEFT, 17);
                     }
 

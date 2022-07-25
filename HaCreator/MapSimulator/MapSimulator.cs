@@ -4,6 +4,7 @@ using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapSimulator.Objects.FieldObject;
 using HaCreator.MapSimulator.Objects.UIObject;
+using HaCreator.Wz;
 using HaRepacker.Utils;
 using HaSharedLibrary;
 using HaSharedLibrary.Render;
@@ -33,8 +34,17 @@ namespace HaCreator.MapSimulator
     /// 
     /// http://rbwhitaker.wikidot.com/xna-tutorials
     /// </summary>
-    public class MapSimulator : Microsoft.Xna.Framework.Game
     {
+        const bool BGM = false;
+        const bool TILES = true;
+        const bool BACKGROUND = true;
+        const bool REACTORS = true;
+        const bool NPCS = true;
+        const bool MOBS = true;
+        const bool PORTALS = true;
+        const bool TOOLTIPS = true;
+        const bool MINIMAP = true;
+
         public int mapShiftX = 0;
         public int mapShiftY = 0;
         public Point minimapPos;
@@ -220,6 +230,12 @@ namespace HaCreator.MapSimulator
             this.matrixScale = Matrix.CreateScale(RenderObjectScaling);
         }
 
+        public void Load()
+        {
+            Initialize();
+            LoadContent();
+        }
+
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -249,23 +265,27 @@ namespace HaCreator.MapSimulator
         /// </summary>
         protected override void LoadContent()
         {
-            WzDirectory MapWzFile = Program.WzManager["map"]; // Map.wz
-            WzDirectory UIWZFile = Program.WzManager["ui"];
-            WzDirectory SoundWZFile = Program.WzManager["sound"];
+            WzDirectory MapWzFile = WzFileManager.Instance["map"]; // Map.wz
+            WzDirectory UIWZFile = WzFileManager.Instance["ui"];
+            WzDirectory SoundWZFile = WzFileManager.Instance["sound"];
 
             this.bBigBangUpdate = UIWZFile["UIWindow2.img"]?["BigBang!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"] != null; // different rendering for pre and post-bb, to support multiple vers
             this.bBigBang2Update = UIWZFile["UIWindow2.img"]?["BigBang2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"] != null;
 
             // BGM
-            if (Program.InfoManager.BGMs.ContainsKey(mapBoard.MapInfo.bgm))
+            if (BGM)
             {
-                audio = new WzMp3Streamer(Program.InfoManager.BGMs[mapBoard.MapInfo.bgm], true);
-                if (audio != null)
+                if (WzFileManager.Instance.InfoManager.BGMs.ContainsKey(mapBoard.MapInfo.bgm))
                 {
-                    audio.Volume = 0.3f;
-                    audio.Play();
+                    audio = new WzMp3Streamer(WzFileManager.Instance.InfoManager.BGMs[mapBoard.MapInfo.bgm], true);
+                    if (audio != null)
+                    {
+                        audio.Volume = 0.3f;
+                        audio.Play();
+                    }
                 }
             }
+
             if (mapBoard.VRRectangle == null)
             {
                 vr_fieldBoundary = new Rectangle(0, 0, mapBoard.MapSize.X, mapBoard.MapSize.Y);
@@ -281,24 +301,30 @@ namespace HaCreator.MapSimulator
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
 #endif
-
             /////// Background and objects
             List<WzObject> usedProps = new List<WzObject>();
+
+            WzImageProperty cursorImageProperty = (WzImageProperty)UIWZFile["Basic.img"]?["Cursor"];
+            this.mouseCursor = MapSimulatorLoader.CreateMouseCursorFromProperty(texturePool, cursorImageProperty, 0, 0, _DxDeviceManager.GraphicsDevice, ref usedProps, false);
             
-            // Objects
-            Task t_tiles = Task.Run(() =>
+            skeletonMeshRenderer = new SkeletonMeshRenderer(GraphicsDevice)
+            {
+                PremultipliedAlpha = false,
+            };
+            skeletonMeshRenderer.Effect.World = this.matrixScale;
+
+            if (TILES)
             {
                 foreach (LayeredItem tileObj in mapBoard.BoardItems.TileObjs)
                 {
                     WzImageProperty tileParent = (WzImageProperty)tileObj.BaseInfo.ParentObject;
 
-                    mapObjects[tileObj.LayerNumber].Add(
-                        MapSimulatorLoader.CreateMapItemFromProperty(texturePool, tileParent, tileObj.X, tileObj.Y, mapBoard.CenterPoint, _DxDeviceManager.GraphicsDevice, ref usedProps, tileObj is IFlippable ? ((IFlippable)tileObj).Flip : false));
+                    var obj = MapSimulatorLoader.CreateMapItemFromProperty(texturePool, tileParent, tileObj.X, tileObj.Y, mapBoard.CenterPoint, _DxDeviceManager.GraphicsDevice, ref usedProps, tileObj is IFlippable ? ((IFlippable)tileObj).Flip : false);
+                    mapObjects[tileObj.LayerNumber].Add(obj);
                 }
-            });
+            }
 
-            // Background
-            Task t_Background = Task.Run(() =>
+            if (BACKGROUND)
             {
                 foreach (BackgroundInstance background in mapBoard.BoardItems.BackBackgrounds)
                 {
@@ -314,10 +340,9 @@ namespace HaCreator.MapSimulator
                     backgrounds_front.Add(
                         MapSimulatorLoader.CreateBackgroundFromProperty(texturePool, bgParent, background, _DxDeviceManager.GraphicsDevice, ref usedProps, background.Flip));
                 }
-            });
+            }
 
-            // Reactors
-            Task t_reactor = Task.Run(() =>
+            if (REACTORS)
             {
                 foreach (ReactorInstance reactor in mapBoard.BoardItems.Reactors)
                 {
@@ -326,10 +351,9 @@ namespace HaCreator.MapSimulator
                     ReactorItem reactorItem = MapSimulatorLoader.CreateReactorFromProperty(texturePool, reactor, _DxDeviceManager.GraphicsDevice, ref usedProps);
                     mapObjects_Reactors.Add(reactorItem);
                 }
-            });
+            }
 
-            // NPCs
-            Task t_npc = Task.Run(() =>
+            if (NPCS)
             {
                 foreach (NpcInstance npc in mapBoard.BoardItems.NPCs)
                 {
@@ -340,23 +364,21 @@ namespace HaCreator.MapSimulator
                     NpcItem npcItem = MapSimulatorLoader.CreateNpcFromProperty(texturePool, npc, _DxDeviceManager.GraphicsDevice, ref usedProps);
                     mapObjects_NPCs.Add(npcItem);
                 }
-            });
+            }
 
-            // Mobs
-            Task t_mobs = Task.Run(() =>
+            if (MOBS)
             {
                 foreach (MobInstance mob in mapBoard.BoardItems.Mobs)
                 {
-                    //WzImage imageProperty = Program.WzManager.FindMobImage(mobInfo.ID); // Mob.wz Mob2.img Mob001.wz
+                    //WzImage imageProperty = WzFileManager.Instance.FindMobImage(mobInfo.ID); // Mob.wz Mob2.img Mob001.wz
                     if (mob.Hide)
                         continue;
                     MobItem npcItem = MapSimulatorLoader.CreateMobFromProperty(texturePool, mob, _DxDeviceManager.GraphicsDevice, ref usedProps);
                     mapObjects_Mobs.Add(npcItem);
                 }
-            });
+            }
 
-            // Portals
-            Task t_portal = Task.Run(() =>
+            if (PORTALS)
             {
                 WzSubProperty portalParent = (WzSubProperty)MapWzFile["MapHelper.img"]["portal"];
 
@@ -369,10 +391,9 @@ namespace HaCreator.MapSimulator
                     if (portalItem != null)
                         mapObjects_Portal.Add(portalItem);
                 }
-            });
+            }
 
-            // Tooltips
-            Task t_tooltips = Task.Run(() =>
+            if (TOOLTIPS)
             {
                 WzSubProperty farmFrameParent = (WzSubProperty)UIWZFile["UIToolTip.img"]?["Item"]?["FarmFrame"];
                 foreach (ToolTipInstance tooltip in mapBoard.BoardItems.ToolTips)
@@ -381,38 +402,14 @@ namespace HaCreator.MapSimulator
 
                     mapObjects_tooltips.Add(item);
                 }
-            });
+            }
 
-            // Cursor
-            Task t_cursor = Task.Run(() =>
-            {
-                WzImageProperty cursorImageProperty = (WzImageProperty)UIWZFile["Basic.img"]?["Cursor"];
-                this.mouseCursor = MapSimulatorLoader.CreateMouseCursorFromProperty(texturePool, cursorImageProperty, 0, 0, _DxDeviceManager.GraphicsDevice, ref usedProps, false);
-            });
-
-            // Spine object
-            Task t_spine = Task.Run(() =>
-            {
-                skeletonMeshRenderer = new SkeletonMeshRenderer(GraphicsDevice)
-                {
-                    PremultipliedAlpha = false,
-                };
-                skeletonMeshRenderer.Effect.World = this.matrixScale;
-            });
-
-            // Minimap
-            Task t_minimap = Task.Run(() =>
+            if (MINIMAP)
             {
                 if (!mapBoard.MapInfo.hideMinimap)
                 {
                     miniMap = MapSimulatorLoader.CreateMinimapFromProperty(UIWZFile, mapBoard, GraphicsDevice, UserScreenScaleFactor, mapBoard.MapInfo.strMapName, mapBoard.MapInfo.strStreetName, SoundWZFile, bBigBangUpdate);
                 }
-            });
-
-            while (!t_tiles.IsCompleted || !t_Background.IsCompleted || !t_reactor.IsCompleted || !t_npc.IsCompleted || !t_mobs.IsCompleted || !t_portal.IsCompleted || 
-                !t_tooltips.IsCompleted || !t_cursor.IsCompleted || !t_spine.IsCompleted || !t_minimap.IsCompleted)
-            {
-                Thread.Sleep(100);
             }
 
 #if DEBUG
