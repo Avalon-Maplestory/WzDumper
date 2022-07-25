@@ -34,6 +34,7 @@ namespace HaCreator.MapSimulator
     /// 
     /// http://rbwhitaker.wikidot.com/xna-tutorials
     /// </summary>
+    public partial class MapSimulator : Microsoft.Xna.Framework.Game
     {
         const bool BGM = false;
         const bool TILES = true;

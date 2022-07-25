@@ -363,7 +363,10 @@ namespace HaCreator.MapEditor
             set 
             { 
                 vrRect = value;
-                ((System.Windows.Controls.MenuItem) menu.Items[1]).IsEnabled = value == null;
+                if (menu != null)
+                {
+                    ((System.Windows.Controls.MenuItem)menu.Items[1]).IsEnabled = value == null;
+                }
             }
         }
 
@@ -373,7 +376,10 @@ namespace HaCreator.MapEditor
             set 
             { 
                 mmRect = value;
-                ((System.Windows.Controls.MenuItem)menu.Items[2]).IsEnabled = value == null;
+                if (menu != null)
+                {
+                    ((System.Windows.Controls.MenuItem)menu.Items[2]).IsEnabled = value == null;
+                }
                 parent.OnMinimapStateChanged(this, mmRect != null);
             }
         }
