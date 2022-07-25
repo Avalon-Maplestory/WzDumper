@@ -732,6 +732,10 @@
     <EmbeddedResource Include="Properties\Resources.zh-CHT.resx" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Avalon\MapData\MapData.csproj">
+      <Project>{605156c9-f8ea-48c2-942b-32221d033ef1}</Project>
+      <Name>MapData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HaRepacker\Harepacker-resurrected.csproj">
       <Project>{0b7155ef-1eb0-4fae-ba56-8064cbaf2bea}</Project>
       <Name>Harepacker-resurrected</Name>

@@ -83,17 +83,21 @@
   <ItemGroup>
     <Compile Include="MapDataPreview.cs" />
     <Compile Include="MapDataSaver.cs" />
-    <Compile Include="MapDumper.cs" />
+    <Compile Include="MapDumperCS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HaCreator\HaCreator.csproj">
-      <Project>{679dd557-5e1e-447e-b48c-0f082e5fb1f4}</Project>
+      <Project>{679DD557-5E1E-447E-B48C-0F082E5FB1F4}</Project>
       <Name>HaCreator</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\MapleLib\MapleLib.csproj">
       <Project>{28AAB36D-942E-4476-A000-0E9DE380F390}</Project>
       <Name>MapleLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MapData\MapData.csproj">
+      <Project>{605156c9-f8ea-48c2-942b-32221d033ef1}</Project>
+      <Name>MapData</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

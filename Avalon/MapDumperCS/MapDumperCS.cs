@@ -7,6 +7,7 @@ using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,16 +18,26 @@ using static HaCreator.MapSimulator.MapSimulator;
 
 namespace MapDumperCS
 {
-    public class MapDumper
+    public class MapDumperCS
     {
-        public MapDumper(string maplestoryDirectory)
+        public MapDumperCS(string maplestoryDirectory)
         {
             InitializeWzFiles(maplestoryDirectory);
         }
 
-        public MapData DumpMap(int mapId)
+        public List<KeyValuePair<int, string>> GetAvailableMaps()
         {
-            var mapData = new MapData();
+            List<KeyValuePair<int, string>> maps = new List<KeyValuePair<int, string>>();
+            foreach (var (mapId, mapStreetName, mapName) in WzFileManager.Instance.InfoManager.Maps.Select(map => (map.Key, map.Value.Item1, map.Value.Item2)))
+            {
+                maps.Add(new KeyValuePair<int, string>(int.Parse(mapId), $"{mapStreetName} : {mapName}"));
+            }
+            return maps.OrderBy(map => map.Key).ToList();
+        }
+
+        public MapDumper.MapData DumpMap(int mapId)
+        {
+            var mapData = new MapDumper.MapData();
 
             var thread = new Thread(() =>
             {

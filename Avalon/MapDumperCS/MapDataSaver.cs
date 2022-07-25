@@ -12,12 +12,12 @@ namespace MapDumperCS
 {
     public static class MapDataSaver
     {
-        public static string ToJson(this MapData mapData)
+        public static string ToJson(this MapDumper.MapData mapData)
         {
             return JsonConvert.SerializeObject(mapData, Formatting.Indented);
         }
 
-        public static void SaveMapAssets(this MapData mapData, string assetsDirectory)
+        public static void SaveMapAssets(this MapDumper.MapData mapData, string assetsDirectory)
         {
             if (!Directory.Exists(assetsDirectory))
             {

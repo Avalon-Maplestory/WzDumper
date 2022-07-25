@@ -12,9 +12,9 @@ namespace MapDumperCS
 {
     public static class MapDataPreview
     {
-        public static void ShowMapPreview(this MapData mapData, bool procedural = false)
+        public static void ShowMapPreview(this MapDumper.MapData mapData, bool procedural = false)
         {
-            var bitmap = new Bitmap(mapData.mapSize.Width, mapData.mapSize.Height);
+            var bitmap = new Bitmap(mapData.mapSize.width, mapData.mapSize.height);
             var graphics = Graphics.FromImage(bitmap);
 
             using (var form = new Form())
@@ -44,14 +44,14 @@ namespace MapDumperCS
             }
         }
 
-        private static void RenderTiles(MapData mapData, Graphics graphics, PictureBox pictureBox, bool procedural)
+        private static void RenderTiles(MapDumper.MapData mapData, Graphics graphics, PictureBox pictureBox, bool procedural)
         {
             foreach (var layer in mapData.layers)
             {
                 foreach (var tile in layer.tiles)
                 {
                     var frame = tile.frames[0];
-                    graphics.DrawImage(mapData.assets.bitmaps[frame.bitmapPath], frame.position);
+                    graphics.DrawImage(mapData.assets.bitmaps[frame.bitmapPath], frame.position.x, frame.position.y);
                     if (procedural)
                     {
                         pictureBox.Refresh();
