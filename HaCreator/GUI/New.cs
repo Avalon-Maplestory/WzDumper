@@ -93,7 +93,7 @@ namespace HaCreator.GUI
             string mapId_PaddingZeros = mapId_str.PadLeft(9, '0') + ".img"; // 100000000.img.xml
             string mapcat = "Map" + mapId_PaddingZeros.Substring(0, 1);
 
-            WzDirectory directory = Program.WzManager.FindMapWz(mapcat);
+            WzDirectory directory = WzFileManager.Instance.FindMapWz(mapcat);
             WzImage mapImage = (WzImage)directory[mapId_PaddingZeros];
 
             if (mapImage == null)

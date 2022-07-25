@@ -70,7 +70,7 @@ namespace HaCreator.Wz
         public static string GetMobNameById(string id)
         {
             id = RemoveLeadingZeros(id);
-            WzObject obj = Program.WzManager.String["Mob.img"][id];
+            WzObject obj = WzFileManager.Instance.String["Mob.img"][id];
             if (obj == null)
             {
                 return "";
@@ -86,7 +86,7 @@ namespace HaCreator.Wz
         public static string GetNpcNameById(string id)
         {
             id = RemoveLeadingZeros(id);
-            WzObject obj = Program.WzManager.String["Npc.img"][id];
+            WzObject obj = WzFileManager.Instance.String["Npc.img"][id];
             if (obj == null)
             {
                 return "";
@@ -102,7 +102,7 @@ namespace HaCreator.Wz
         public static WzSubProperty GetMapStringProp(string id)
         {
             id = RemoveLeadingZeros(id);
-            WzImage mapNameParent = (WzImage)Program.WzManager.String["Map.img"];
+            WzImage mapNameParent = (WzImage)WzFileManager.Instance.String["Map.img"];
             foreach (WzSubProperty mapNameCategory in mapNameParent.WzProperties)
             {
                 WzSubProperty mapNameDirectory = (WzSubProperty)mapNameCategory[id];

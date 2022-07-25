@@ -4,6 +4,7 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using HaCreator.Wz;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Serialization;
 using System;
@@ -31,9 +32,9 @@ namespace HaCreator.GUI
             StringBuilder repackTxt = new StringBuilder("Files to repack:");
             repackTxt.Append(Environment.NewLine);
 
-            foreach (WzFile wzf in Program.WzManager.wzFiles.Values)
+            foreach (WzFile wzf in WzFileManager.Instance.wzFiles.Values)
             {
-                if (Program.WzManager.wzFilesUpdated[wzf])
+                if (WzFileManager.Instance.wzFilesUpdated[wzf])
                 {
                     toRepack.Add(wzf);
 
@@ -135,7 +136,7 @@ namespace HaCreator.GUI
             });
 
             // Test for write access
-            string rootDir = Path.Combine(Program.WzManager.BaseDir, Program.APP_NAME);
+            string rootDir = Path.Combine(WzFileManager.Instance.BaseDir, Program.APP_NAME);
             string testDir = Path.Combine(rootDir, "Test");
 
             bool bSaveFileInHaCreatorDirectory = false;
@@ -190,7 +191,7 @@ namespace HaCreator.GUI
             { 
                 ChangeRepackState("Saving XMLs..."); 
             });
-            foreach (WzImage img in Program.WzManager.updatedImages)
+            foreach (WzImage img in WzFileManager.Instance.updatedImages)
             {
                 try
                 {

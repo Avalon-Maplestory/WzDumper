@@ -182,12 +182,12 @@ namespace HaCreator.GUI
 
                 if (selectedName.StartsWith("MapLogin")) // MapLogin, MapLogin1, MapLogin2, MapLogin3
                 {
-                    mapImage = (WzImage)Program.WzManager["ui"][selectedName + ".img"];
+                    mapImage = (WzImage)WzFileManager.Instance["ui"][selectedName + ".img"];
                     mapName = streetName = categoryName = selectedName;
                 }
                 else if (mapBrowser.SelectedItem == "CashShopPreview")
                 {
-                    mapImage = (WzImage)Program.WzManager["ui"]["CashShopPreview.img"];
+                    mapImage = (WzImage)WzFileManager.Instance["ui"]["CashShopPreview.img"];
                     mapName = streetName = categoryName = "CashShopPreview";
                 }
                 else
@@ -197,7 +197,7 @@ namespace HaCreator.GUI
 
                     string mapcat = "Map" + mapid_str.Substring(0, 1);
 
-                    WzDirectory directory = Program.WzManager.FindMapWz(mapcat);
+                    WzDirectory directory = WzFileManager.Instance.FindMapWz(mapcat);
                     mapImage = (WzImage)directory[mapid_str + ".img"];
 
                     strMapProp = WzInfoTools.GetMapStringProp(mapid_str);

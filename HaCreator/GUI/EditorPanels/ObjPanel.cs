@@ -7,6 +7,7 @@
 using HaCreator.CustomControls;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
+using HaCreator.Wz;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
@@ -39,7 +40,7 @@ namespace HaCreator.GUI.EditorPanels
             hcsm.SetObjPanel(this);
 
             List<string> sortedObjSets = new List<string>();
-            foreach (KeyValuePair<string, WzImage> oS in Program.InfoManager.ObjectSets)
+            foreach (KeyValuePair<string, WzImage> oS in WzFileManager.Instance.InfoManager.ObjectSets)
                 sortedObjSets.Add(oS.Key);
             sortedObjSets.Sort();
             foreach (string oS in sortedObjSets)
@@ -54,7 +55,7 @@ namespace HaCreator.GUI.EditorPanels
             objL0ListBox.Items.Clear();
             objL1ListBox.Items.Clear();
             objImagesContainer.Controls.Clear();
-            WzImage oSImage = Program.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem];
+            WzImage oSImage = WzFileManager.Instance.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem];
             if (!oSImage.Parsed)
             {
                 oSImage.ParseImage();
@@ -77,7 +78,7 @@ namespace HaCreator.GUI.EditorPanels
 
             objL1ListBox.Items.Clear();
             objImagesContainer.Controls.Clear();
-            WzImageProperty l0Prop = Program.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem][(string)objL0ListBox.SelectedItem];
+            WzImageProperty l0Prop = WzFileManager.Instance.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem][(string)objL0ListBox.SelectedItem];
             foreach (WzImageProperty l1Prop in l0Prop.WzProperties)
             {
                 objL1ListBox.Items.Add(l1Prop.Name);
@@ -95,7 +96,7 @@ namespace HaCreator.GUI.EditorPanels
             {
                 if (objL1ListBox.SelectedItem == null) return;
                 objImagesContainer.Controls.Clear();
-                WzImageProperty l1Prop = Program.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem][(string)objL0ListBox.SelectedItem][(string)objL1ListBox.SelectedItem];
+                WzImageProperty l1Prop = WzFileManager.Instance.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem][(string)objL0ListBox.SelectedItem][(string)objL1ListBox.SelectedItem];
                 try
                 {
                     foreach (WzSubProperty l2Prop in l1Prop.WzProperties)

@@ -74,7 +74,7 @@ namespace HaCreator.GUI
             yBox.Value = board.MapSize.Y;
 
             List<string> sortedBGMs = new List<string>();
-            foreach (KeyValuePair<string, WzBinaryProperty> bgm in Program.InfoManager.BGMs)
+            foreach (KeyValuePair<string, WzBinaryProperty> bgm in WzFileManager.Instance.InfoManager.BGMs)
                 sortedBGMs.Add(bgm.Key);
             sortedBGMs.Sort();
             foreach (string bgm in sortedBGMs)
@@ -82,7 +82,7 @@ namespace HaCreator.GUI
             bgmBox.SelectedItem = info.bgm;
 
             List<string> sortedMarks = new List<string>();
-            foreach (KeyValuePair<string, Bitmap> mark in Program.InfoManager.MapMarks)
+            foreach (KeyValuePair<string, Bitmap> mark in WzFileManager.Instance.InfoManager.MapMarks)
                 sortedMarks.Add(mark.Key);
             sortedMarks.Sort();
             foreach (string mark in sortedMarks)
@@ -293,7 +293,7 @@ namespace HaCreator.GUI
 
         private void bgmBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            soundPlayer1.SoundProperty = Program.InfoManager.BGMs[(string)bgmBox.SelectedItem];
+            soundPlayer1.SoundProperty = WzFileManager.Instance.InfoManager.BGMs[(string)bgmBox.SelectedItem];
         }
 
         private void InfoEditor_FormClosing(object sender, FormClosingEventArgs e)
@@ -303,7 +303,7 @@ namespace HaCreator.GUI
 
         private void markBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            markImage.Image = Program.InfoManager.MapMarks[(string)markBox.SelectedItem];
+            markImage.Image = WzFileManager.Instance.InfoManager.MapMarks[(string)markBox.SelectedItem];
         }
 
         protected override void cancelButton_Click(object sender, EventArgs e)

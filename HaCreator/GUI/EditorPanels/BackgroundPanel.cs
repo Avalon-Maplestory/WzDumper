@@ -7,6 +7,7 @@
 using HaCreator.CustomControls;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
+using HaCreator.Wz;
 using HaSharedLibrary.GUI;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Spine;
@@ -41,7 +42,7 @@ namespace HaCreator.GUI.EditorPanels
             this.hcsm = hcsm;
 
             List<string> sortedBgSets = new List<string>();
-            foreach (KeyValuePair<string, WzImage> bS in Program.InfoManager.BackgroundSets)
+            foreach (KeyValuePair<string, WzImage> bS in WzFileManager.Instance.InfoManager.BackgroundSets)
             {
                 sortedBgSets.Add(bS.Key);
             }
@@ -81,7 +82,7 @@ namespace HaCreator.GUI.EditorPanels
                 path = "back";
             }
 
-            WzImageProperty parentProp = Program.InfoManager.BackgroundSets[(string)bgSetListBox.SelectedItem][path];
+            WzImageProperty parentProp = WzFileManager.Instance.InfoManager.BackgroundSets[(string)bgSetListBox.SelectedItem][path];
             if (parentProp == null || parentProp.WzProperties == null)
                 return;
 

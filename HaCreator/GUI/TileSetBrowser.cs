@@ -16,6 +16,7 @@ using System.Collections;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using HaCreator.CustomControls;
+using HaCreator.Wz;
 
 namespace HaCreator.GUI
 {
@@ -29,12 +30,12 @@ namespace HaCreator.GUI
             InitializeComponent();
             targetListBox = target;
             List<string> sortedTileSets = new List<string>();
-            foreach (KeyValuePair<string, WzImage> tS in Program.InfoManager.TileSets)
+            foreach (KeyValuePair<string, WzImage> tS in WzFileManager.Instance.InfoManager.TileSets)
                 sortedTileSets.Add(tS.Key);
             sortedTileSets.Sort();
             foreach (string tS in sortedTileSets)
             {
-                WzImage tSImage = Program.InfoManager.TileSets[tS];
+                WzImage tSImage = WzFileManager.Instance.InfoManager.TileSets[tS];
                 if (!tSImage.Parsed) tSImage.ParseImage();
                 WzImageProperty enh0 = tSImage["enH0"];
                 if (enh0 == null) 

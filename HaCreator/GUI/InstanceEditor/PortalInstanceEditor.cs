@@ -29,13 +29,13 @@ namespace HaCreator.GUI.InstanceEditor
         public PortalInstanceEditor(PortalInstance item)
         {
             InitializeComponent();
-            int portalTypes = Program.InfoManager.PortalTypeById.Count;
+            int portalTypes = WzFileManager.Instance.InfoManager.PortalTypeById.Count;
             ArrayList portals = new ArrayList();
             for (int i = 0; i < portalTypes; i++)
             {
                 try
                 {
-                    portals.Add(Tables.PortalTypeNames[Program.InfoManager.PortalTypeById[i]]);
+                    portals.Add(Tables.PortalTypeNames[WzFileManager.Instance.InfoManager.PortalTypeById[i]]);
                 }
                 catch(KeyNotFoundException) 
                 { 
@@ -65,7 +65,7 @@ namespace HaCreator.GUI.InstanceEditor
 
             xInput.Value = item.X;
             yInput.Value = item.Y;
-            ptComboBox.SelectedIndex = Program.InfoManager.PortalIdByType[item.pt];
+            ptComboBox.SelectedIndex = WzFileManager.Instance.InfoManager.PortalIdByType[item.pt];
             pnBox.Text = item.pn;
             if (item.tm == item.Board.MapInfo.id) thisMap.Checked = true;
             else tmBox.Value = item.tm;
@@ -113,7 +113,7 @@ namespace HaCreator.GUI.InstanceEditor
                 if (actions.Count > 0)
                     item.Board.UndoRedoMan.AddUndoBatch(actions);
 
-                item.pt = Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex];
+                item.pt = WzFileManager.Instance.InfoManager.PortalTypeById[ptComboBox.SelectedIndex];
                 switch (item.pt)
                 {
                     case PortalType.PORTALTYPE_STARTPOINT:
@@ -313,7 +313,7 @@ namespace HaCreator.GUI.InstanceEditor
                         break;
                 }
 
-                if (portalImageList.SelectedItem != null && Program.InfoManager.GamePortals.ContainsKey(Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]))
+                if (portalImageList.SelectedItem != null && WzFileManager.Instance.InfoManager.GamePortals.ContainsKey(WzFileManager.Instance.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]))
                 {
                     item.image = (string)portalImageList.SelectedItem;
                 }
@@ -336,7 +336,7 @@ namespace HaCreator.GUI.InstanceEditor
         private void ptComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             btnBrowseTn.Enabled = thisMap.Checked;
-            switch (Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex])
+            switch (WzFileManager.Instance.InfoManager.PortalTypeById[ptComboBox.SelectedIndex])
             {
                 case PortalType.PORTALTYPE_STARTPOINT:
                     rowMan.SetInvisible("pn");
@@ -489,11 +489,11 @@ namespace HaCreator.GUI.InstanceEditor
                     rowMan.SetVisible("bool");
                     break;
             }
-            string pt = Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex];
+            string pt = WzFileManager.Instance.InfoManager.PortalTypeById[ptComboBox.SelectedIndex];
             leftBlankLabel.Visible = pt == PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP;
             if (pt == PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP)
                 btnBrowseTn.Enabled = true;
-            if (!Program.InfoManager.GamePortals.ContainsKey(pt)) 
+            if (!WzFileManager.Instance.InfoManager.GamePortals.ContainsKey(pt)) 
                 rowMan.SetInvisible("image");
             else
             {
@@ -501,7 +501,7 @@ namespace HaCreator.GUI.InstanceEditor
                 portalImageList.Items.Add("default");
                 portalImageBox.Image = null;
                 rowMan.SetVisible("image");
-                foreach (DictionaryEntry image in Program.InfoManager.GamePortals[pt])
+                foreach (DictionaryEntry image in WzFileManager.Instance.InfoManager.GamePortals[pt])
                     portalImageList.Items.Add(image.Key);
                 portalImageList.SelectedIndex = 0;
             }
@@ -515,9 +515,9 @@ namespace HaCreator.GUI.InstanceEditor
                     return;
                 else if ((string)portalImageList.SelectedItem == "default")
                     return;
-                //portalImageBox.Image = new Bitmap(Program.InfoManager.GamePortals[Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]].DefaultImage);
+                //portalImageBox.Image = new Bitmap(WzFileManager.Instance.InfoManager.GamePortals[WzFileManager.Instance.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]].DefaultImage);
                 else
-                    portalImageBox.Image = new Bitmap(Program.InfoManager.GamePortals[Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]][(string)portalImageList.SelectedItem]);
+                    portalImageBox.Image = new Bitmap(WzFileManager.Instance.InfoManager.GamePortals[WzFileManager.Instance.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]][(string)portalImageList.SelectedItem]);
             }
         }
 

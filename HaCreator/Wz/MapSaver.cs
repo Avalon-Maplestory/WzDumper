@@ -61,7 +61,7 @@ namespace HaCreator.Wz
             {
                 string cat = "Map" + image.Name.Substring(0, 1);
 
-                WzDirectory catDir = Program.WzManager.FindMapWz(cat);
+                WzDirectory catDir = WzFileManager.Instance.FindMapWz(cat);
                 if (catDir == null)
                 {
                     throw new Exception("Could not find any suitable Map.wz for inserting the newly created map");
@@ -73,18 +73,18 @@ namespace HaCreator.Wz
                 }
                 catDir.AddImage(image);
 
-                Program.WzManager.SetWzFileUpdated(catDir.GetTopMostWzDirectory().Name /* "map" */, image);
+                WzFileManager.Instance.SetWzFileUpdated(catDir.GetTopMostWzDirectory().Name /* "map" */, image);
             }
             else
             {
-                WzDirectory mapDir = (WzDirectory)Program.WzManager["ui"];
+                WzDirectory mapDir = (WzDirectory)WzFileManager.Instance["ui"];
                 WzImage mapImg = (WzImage)mapDir[image.Name];
                 if (mapImg != null)
                 {
                     mapImg.Remove();
                 }
                 mapDir.AddImage(image);
-                Program.WzManager.SetWzFileUpdated("ui", image);
+                WzFileManager.Instance.SetWzFileUpdated("ui", image);
             }
         }
 
@@ -93,34 +93,34 @@ namespace HaCreator.Wz
             board.MapInfo.Save(image, board.VRRectangle == null ? (System.Drawing.Rectangle?)null : new System.Drawing.Rectangle(board.VRRectangle.X, board.VRRectangle.Y, board.VRRectangle.Width, board.VRRectangle.Height));
             if (board.MapInfo.mapType == MapType.RegularMap)
             {
-                WzImage strMapImg = (WzImage)Program.WzManager.String["Map.img"];
+                WzImage strMapImg = (WzImage)WzFileManager.Instance.String["Map.img"];
                 WzSubProperty strCatProp = (WzSubProperty)strMapImg[board.MapInfo.strCategoryName];
                 if (strCatProp == null)
                 {
                     strCatProp = new WzSubProperty();
                     strMapImg[board.MapInfo.strCategoryName] = strCatProp;
-                    Program.WzManager.SetWzFileUpdated("string", strMapImg);
+                    WzFileManager.Instance.SetWzFileUpdated("string", strMapImg);
                 }
                 WzSubProperty strMapProp = (WzSubProperty)strCatProp[board.MapInfo.id.ToString()];
                 if (strMapProp == null)
                 {
                     strMapProp = new WzSubProperty();
                     strCatProp[board.MapInfo.id.ToString()] = strMapProp;
-                    Program.WzManager.SetWzFileUpdated("string", strMapImg);
+                    WzFileManager.Instance.SetWzFileUpdated("string", strMapImg);
                 }
                 WzStringProperty strMapName = (WzStringProperty)strMapProp["mapName"];
                 if (strMapName == null)
                 {
                     strMapName = new WzStringProperty();
                     strMapProp["mapName"] = strMapName;
-                    Program.WzManager.SetWzFileUpdated("string", strMapImg);
+                    WzFileManager.Instance.SetWzFileUpdated("string", strMapImg);
                 }
                 WzStringProperty strStreetName = (WzStringProperty)strMapProp["streetName"];
                 if (strStreetName == null)
                 {
                     strStreetName = new WzStringProperty();
                     strMapProp["streetName"] = strStreetName;
-                    Program.WzManager.SetWzFileUpdated("string", strMapImg);
+                    WzFileManager.Instance.SetWzFileUpdated("string", strMapImg);
                 }
                 UpdateString(strMapName, board.MapInfo.strMapName, strMapImg);
                 UpdateString(strStreetName, board.MapInfo.strStreetName, strMapImg);
@@ -132,7 +132,7 @@ namespace HaCreator.Wz
             if (strProp.Value != val)
             {
                 strProp.Value = val;
-                Program.WzManager.SetWzFileUpdated("string", img);
+                WzFileManager.Instance.SetWzFileUpdated("string", img);
             }
         }
 
@@ -300,7 +300,7 @@ namespace HaCreator.Wz
 
                 portal["x"] = InfoTool.SetInt(portalInst.X);
                 portal["y"] = InfoTool.SetInt(portalInst.Y);
-                portal["pt"] = InfoTool.SetInt(Program.InfoManager.PortalIdByType[portalInst.pt]);
+                portal["pt"] = InfoTool.SetInt(WzFileManager.Instance.InfoManager.PortalIdByType[portalInst.pt]);
                 portal["tm"] = InfoTool.SetInt(portalInst.tm);
                 portal["tn"] = InfoTool.SetString(portalInst.tn);
                 portal["pn"] = InfoTool.SetString(portalInst.pn);
@@ -347,14 +347,14 @@ namespace HaCreator.Wz
             }
             bool retainTooltipStrings = true;
             WzSubProperty tooltipParent = new WzSubProperty();
-            WzImage strTooltipImg = (WzImage)Program.WzManager.String["ToolTipHelp.img"];
+            WzImage strTooltipImg = (WzImage)WzFileManager.Instance.String["ToolTipHelp.img"];
             WzSubProperty strTooltipCat = (WzSubProperty)strTooltipImg["Mapobject"];
             WzSubProperty strTooltipParent = (WzSubProperty)strTooltipCat[board.MapInfo.id.ToString()];
             if (strTooltipParent == null)
             {
                 strTooltipParent = new WzSubProperty();
                 strTooltipCat[board.MapInfo.id.ToString()] = strTooltipParent;
-                Program.WzManager.SetWzFileUpdated("string", strTooltipImg);
+                WzFileManager.Instance.SetWzFileUpdated("string", strTooltipImg);
                 retainTooltipStrings = false;
             }
 
@@ -376,7 +376,7 @@ namespace HaCreator.Wz
             // If they do not, we need to update string.wz and rebuild the string tooltip props
             if (!retainTooltipStrings)
             {
-                Program.WzManager.SetWzFileUpdated("string", strTooltipImg);
+                WzFileManager.Instance.SetWzFileUpdated("string", strTooltipImg);
                 strTooltipParent.ClearProperties();
             }
 
@@ -401,7 +401,7 @@ namespace HaCreator.Wz
                         if (titleProp == null)
                         {
                             titleProp = new WzStringProperty();
-                            Program.WzManager.SetWzFileUpdated("string", strTooltipImg);
+                            WzFileManager.Instance.SetWzFileUpdated("string", strTooltipImg);
                         }
                         UpdateString(titleProp, ttInst.Title, strTooltipImg);
                     }
@@ -411,7 +411,7 @@ namespace HaCreator.Wz
                         if (descProp == null)
                         {
                             descProp = new WzStringProperty();
-                            Program.WzManager.SetWzFileUpdated("string", strTooltipImg);
+                            WzFileManager.Instance.SetWzFileUpdated("string", strTooltipImg);
                         }
                         UpdateString(descProp, ttInst.Desc, strTooltipImg);
                     }
@@ -1206,7 +1206,7 @@ namespace HaCreator.Wz
 
         public void UpdateMapLists()
         {
-            Program.InfoManager.Maps[WzInfoTools.AddLeadingZeros(board.MapInfo.id.ToString(), 9)] =
+            WzFileManager.Instance.InfoManager.Maps[WzInfoTools.AddLeadingZeros(board.MapInfo.id.ToString(), 9)] =
                 new Tuple<string, string>(board.MapInfo.strStreetName, board.MapInfo.strMapName);
         }
     }

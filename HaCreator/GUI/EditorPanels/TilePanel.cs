@@ -23,6 +23,7 @@ using MapleLib.WzLib.WzStructure;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.UndoRedo;
 using HaCreator.CustomControls;
+using HaCreator.Wz;
 
 namespace HaCreator.GUI.EditorPanels
 {
@@ -41,7 +42,7 @@ namespace HaCreator.GUI.EditorPanels
             hcsm.SetTilePanel(this);
 
             List<string> sortedTileSets = new List<string>();
-            foreach (KeyValuePair<string, WzImage> tS in Program.InfoManager.TileSets)
+            foreach (KeyValuePair<string, WzImage> tS in WzFileManager.Instance.InfoManager.TileSets)
                 sortedTileSets.Add(tS.Key);
             sortedTileSets.Sort();
             foreach (string tS in sortedTileSets)
@@ -76,9 +77,9 @@ namespace HaCreator.GUI.EditorPanels
                     return;
                 tileImagesContainer.Controls.Clear();
                 string selectedSetName = (string)tileSetList.SelectedItem;
-                if (!Program.InfoManager.TileSets.ContainsKey(selectedSetName))
+                if (!WzFileManager.Instance.InfoManager.TileSets.ContainsKey(selectedSetName))
                     return;
-                WzImage tileSetImage = Program.InfoManager.TileSets[selectedSetName];
+                WzImage tileSetImage = WzFileManager.Instance.InfoManager.TileSets[selectedSetName];
                 int? mag = InfoTool.GetOptionalInt(tileSetImage["info"]["mag"]);
                 foreach (WzSubProperty tCat in tileSetImage.WzProperties)
                 {

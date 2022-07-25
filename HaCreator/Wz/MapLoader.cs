@@ -338,7 +338,7 @@ namespace HaCreator.Wz
                 string name = InfoTool.GetOptionalString(reactor["name"]);
                 string id = InfoTool.GetString(reactor["id"]);
                 bool flip = InfoTool.GetBool(reactor["f"]);
-                mapBoard.BoardItems.Reactors.Add((ReactorInstance)Program.InfoManager.Reactors[id].CreateInstance(mapBoard, x, y, reactorTime, name, flip));
+                mapBoard.BoardItems.Reactors.Add((ReactorInstance)WzFileManager.Instance.InfoManager.Reactors[id].CreateInstance(mapBoard, x, y, reactorTime, name, flip));
             }
         }
 
@@ -544,7 +544,7 @@ namespace HaCreator.Wz
             {
                 int x = InfoTool.GetInt(portal["x"]);
                 int y = InfoTool.GetInt(portal["y"]);
-                string pt = Program.InfoManager.PortalTypeById[InfoTool.GetInt(portal["pt"])];
+                string pt = WzFileManager.Instance.InfoManager.PortalTypeById[InfoTool.GetInt(portal["pt"])];
                 int tm = InfoTool.GetInt(portal["tm"]);
                 string tn = InfoTool.GetString(portal["tn"]);
                 string pn = InfoTool.GetString(portal["pn"]);
@@ -570,7 +570,7 @@ namespace HaCreator.Wz
                 return;
             }
 
-            WzImage tooltipsStringImage = (WzImage)Program.WzManager.String["ToolTipHelp.img"];
+            WzImage tooltipsStringImage = (WzImage)WzFileManager.Instance.String["ToolTipHelp.img"];
             if (!tooltipsStringImage.Parsed)
             {
                 tooltipsStringImage.ParseImage();

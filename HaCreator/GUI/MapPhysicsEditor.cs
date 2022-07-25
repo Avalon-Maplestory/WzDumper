@@ -1,4 +1,5 @@
-﻿using MapleLib.WzLib;
+﻿using HaCreator.Wz;
+using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using System;
 using System.Collections.Generic;
@@ -78,7 +79,7 @@ namespace HaCreator.GUI
             bool bLoadedSuccessfully = false;
             try
             {
-                WzDirectory wzMapFile = Program.WzManager[WZ_FILE_NAME];
+                WzDirectory wzMapFile = WzFileManager.Instance[WZ_FILE_NAME];
                 WzImage image = (WzImage)wzMapFile[WZ_FILE_IMAGE];
                 if (image != null)
                 {
@@ -129,7 +130,7 @@ namespace HaCreator.GUI
             string errorMessage = null;
             try
             {
-                WzDirectory wzMapFile = Program.WzManager[WZ_FILE_NAME];
+                WzDirectory wzMapFile = WzFileManager.Instance[WZ_FILE_NAME];
                 WzImage image = (WzImage)wzMapFile[WZ_FILE_IMAGE];
                 if (image != null)
                 {
@@ -153,7 +154,7 @@ namespace HaCreator.GUI
                     image["swimSpeedDec"].SetValue(numericUpDown_swimSpeedDec.Value);
                     image["flyJumpDec"].SetValue(numericUpDown_flyJumpDec.Value);
 
-                    Program.WzManager.SetWzFileUpdated(WZ_FILE_NAME, image); // flag as changed 
+                    WzFileManager.Instance.SetWzFileUpdated(WZ_FILE_NAME, image); // flag as changed 
                 }
                 else
                 {

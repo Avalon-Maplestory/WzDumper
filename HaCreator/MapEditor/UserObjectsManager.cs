@@ -7,6 +7,7 @@
 using HaCreator.Exceptions;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
+using HaCreator.Wz;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using Newtonsoft.Json;
@@ -37,20 +38,20 @@ namespace HaCreator.MapEditor
         {
             this.multiBoard = multiBoard;
 
-            if (Program.InfoManager == null)
+            if (WzFileManager.Instance.InfoManager == null)
             {
-                // Prevents VS designer from crashing when rendering this control; there is no way that Program.InfoManager will be null
+                // Prevents VS designer from crashing when rendering this control; there is no way that WzFileManager.Instance.InfoManager will be null
                 // in the real execution of this code.
                 return;
             }
 
             // Make sure that all our structures exist
-            if (!Program.InfoManager.ObjectSets.ContainsKey(oS))
+            if (!WzFileManager.Instance.InfoManager.ObjectSets.ContainsKey(oS))
             {
-                Program.InfoManager.ObjectSets[oS] = new WzImage(oS);
-                Program.InfoManager.ObjectSets[oS].Changed = true;
+                WzFileManager.Instance.InfoManager.ObjectSets[oS] = new WzImage(oS);
+                WzFileManager.Instance.InfoManager.ObjectSets[oS].Changed = true;
             }
-            WzImage osimg = Program.InfoManager.ObjectSets[oS];
+            WzImage osimg = WzFileManager.Instance.InfoManager.ObjectSets[oS];
             if (osimg[Program.APP_NAME] == null)
             {
                 osimg[Program.APP_NAME] = new WzSubProperty();
@@ -151,9 +152,9 @@ namespace HaCreator.MapEditor
         {
             if (newObjects.Count == 0)
                 return;
-            WzDirectory objsDir = (WzDirectory)Program.WzManager["map"]["Obj"]; // "obj' is in Map.wz or Map2.wz (TODO)
+            WzDirectory objsDir = (WzDirectory)WzFileManager.Instance["map"]["Obj"]; // "obj' is in Map.wz or Map2.wz (TODO)
             if (objsDir[oS + ".img"] == null)
-                objsDir[oS + ".img"] = Program.InfoManager.ObjectSets[oS];
+                objsDir[oS + ".img"] = WzFileManager.Instance.InfoManager.ObjectSets[oS];
             SetOsUpdated();
             newObjects.Clear();
         }
@@ -180,9 +181,9 @@ namespace HaCreator.MapEditor
 
         private void SetOsUpdated()
         {
-            Program.WzManager.SetWzFileUpdated( 
+            WzFileManager.Instance.SetWzFileUpdated( 
                 "map", // "obj' is in Map.wz or Map2.wz (TODO)
-                Program.InfoManager.ObjectSets[oS]);
+                WzFileManager.Instance.InfoManager.ObjectSets[oS]);
         }
 
         private bool IsNameValid(string name)

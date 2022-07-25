@@ -39,15 +39,15 @@ namespace HaCreator.GUI.EditorPanels
         {
             this.hcsm = hcsm;
 
-            foreach (KeyValuePair<string, ReactorInfo> entry in Program.InfoManager.Reactors)
+            foreach (KeyValuePair<string, ReactorInfo> entry in WzFileManager.Instance.InfoManager.Reactors)
             {
                 reactors.Add(entry.Value.ID);
             }
-            foreach (KeyValuePair<string, string> entry in Program.InfoManager.NPCs)
+            foreach (KeyValuePair<string, string> entry in WzFileManager.Instance.InfoManager.NPCs)
             {
                 npcs.Add(entry.Key + " - " + entry.Value);
             }
-            foreach (KeyValuePair<string, string> entry in Program.InfoManager.Mobs)
+            foreach (KeyValuePair<string, string> entry in WzFileManager.Instance.InfoManager.Mobs)
             {
                 mobs.Add(entry.Key + " - " + entry.Value);
             }
@@ -95,7 +95,7 @@ namespace HaCreator.GUI.EditorPanels
                 if (lifeListBox.SelectedItem == null) return;
                 if (reactorRButton.Checked)
                 {
-                    ReactorInfo info = Program.InfoManager.Reactors[(string)lifeListBox.SelectedItem];
+                    ReactorInfo info = WzFileManager.Instance.InfoManager.Reactors[(string)lifeListBox.SelectedItem];
                     lifePictureBox.Image = new Bitmap(info.Image);
                     hcsm.EnterEditMode(ItemTypes.Reactors);
                     hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(info);

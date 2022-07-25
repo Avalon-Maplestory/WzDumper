@@ -63,7 +63,7 @@ namespace HaCreator.MapEditor.Info
 
         public static NpcInfo Get(string id)
         {
-            WzImage npcImage = (WzImage)Program.WzManager["npc"][id + ".img"];
+            WzImage npcImage = (WzImage)WzFileManager.Instance["npc"][id + ".img"];
             if (npcImage == null)
                 return null;
             if (!npcImage.Parsed)
@@ -115,9 +115,9 @@ namespace HaCreator.MapEditor.Info
                 {
                     WzStringProperty link = (WzStringProperty)((WzSubProperty)((WzImage)ParentObject)["info"])["link"];
                     if (link != null)
-                        _LinkedWzImage = (WzImage)Program.WzManager["npc"][link.Value + ".img"];
+                        _LinkedWzImage = (WzImage)WzFileManager.Instance["npc"][link.Value + ".img"];
                     else
-                        _LinkedWzImage = (WzImage)Program.WzManager["npc"][id + ".img"]; // default
+                        _LinkedWzImage = (WzImage)WzFileManager.Instance["npc"][id + ".img"]; // default
                 }
                 return _LinkedWzImage; 
             }

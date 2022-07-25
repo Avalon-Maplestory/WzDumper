@@ -57,16 +57,32 @@ namespace HaCreator.Wz
         public Dictionary<string, WzMainDirectory> wzDirs = new Dictionary<string, WzMainDirectory>();
         private readonly WzMapleVersion version;
 
-        public WzFileManager(string directory, WzMapleVersion version)
+        private WzInformationManager _infoManager = new WzInformationManager();
+        public WzInformationManager InfoManager
+        {
+            get { return _infoManager; }
+        }
+
+        private static WzFileManager _instance = null;
+        public static WzFileManager Instance
+        {
+            get { 
+                if (_instance == null)
+                {
+                    throw new InvalidOperationException("WzFileManager was not initialized");
+                }
+                return _instance;
+            }
+        }
+        public static void Init(string directory, WzMapleVersion version = WzMapleVersion.GENERATE)
+        {
+            _instance = new WzFileManager(directory, version);
+        }
+
+        private WzFileManager(string directory, WzMapleVersion version)
         {
             baseDir = directory;
             this.version = version;
-        }
-
-        public WzFileManager(string directory)
-        {
-            baseDir = directory;
-            this.version = WzMapleVersion.GENERATE;
         }
 
         private string Capitalize(string x)
@@ -204,7 +220,7 @@ namespace HaCreator.Wz
             {
                 WzStringProperty nameProp = (WzStringProperty)mob["name"];
                 string name = nameProp == null ? "" : nameProp.Value;
-                Program.InfoManager.Mobs.Add(WzInfoTools.AddLeadingZeros(mob.Name, 7), name);
+                InfoManager.Mobs.Add(WzInfoTools.AddLeadingZeros(mob.Name, 7), name);
             }
         }
 
@@ -217,7 +233,7 @@ namespace HaCreator.Wz
             {
                 WzStringProperty nameProp = (WzStringProperty)npc["name"];
                 string name = nameProp == null ? "" : nameProp.Value;
-                Program.InfoManager.NPCs.Add(WzInfoTools.AddLeadingZeros(npc.Name, 7), name);
+                InfoManager.NPCs.Add(WzInfoTools.AddLeadingZeros(npc.Name, 7), name);
             }
         }
 
@@ -226,7 +242,7 @@ namespace HaCreator.Wz
             foreach (WzImage reactorImage in this["reactor"].WzImages)
             {
                 ReactorInfo reactor = ReactorInfo.Load(reactorImage);
-                Program.InfoManager.Reactors[reactor.ID] = reactor;
+                InfoManager.Reactors[reactor.ID] = reactor;
             }
         }
 
@@ -261,7 +277,7 @@ namespace HaCreator.Wz
                         }
 
                         if (binProperty != null)
-                            Program.InfoManager.BGMs[WzInfoTools.RemoveExtension(soundImage.Name) + @"/" + binProperty.Name] = binProperty;
+                            InfoManager.BGMs[WzInfoTools.RemoveExtension(soundImage.Name) + @"/" + binProperty.Name] = binProperty;
                     }
                 }
                 catch (Exception e) 
@@ -278,7 +294,7 @@ namespace HaCreator.Wz
             WzImage mapHelper = (WzImage)this["map"]["MapHelper.img"];
             foreach (WzCanvasProperty mark in mapHelper["mark"].WzProperties)
             {
-                Program.InfoManager.MapMarks[mark.Name] = mark.GetLinkedWzCanvasBitmap();
+                InfoManager.MapMarks[mark.Name] = mark.GetLinkedWzCanvasBitmap();
             }
         }
 
@@ -286,7 +302,7 @@ namespace HaCreator.Wz
         {
             WzDirectory tileParent = (WzDirectory)this["map"]["Tile"];
             foreach (WzImage tileset in tileParent.WzImages)
-                Program.InfoManager.TileSets[WzInfoTools.RemoveExtension(tileset.Name)] = tileset;
+                InfoManager.TileSets[WzInfoTools.RemoveExtension(tileset.Name)] = tileset;
         }
 
         //Handle various scenarios ie Map001.wz exists but may only contain Back or only Obj etc
@@ -302,7 +318,7 @@ namespace HaCreator.Wz
                     if (objParent != null)
                     {
                         foreach (WzImage objset in objParent.WzImages)
-                            Program.InfoManager.ObjectSets[WzInfoTools.RemoveExtension(objset.Name)] = objset;
+                            InfoManager.ObjectSets[WzInfoTools.RemoveExtension(objset.Name)] = objset;
                     }
                 }
             }
@@ -321,7 +337,7 @@ namespace HaCreator.Wz
                     if (bgParent1 != null)
                     {
                         foreach (WzImage bgset in bgParent1.WzImages)
-                            Program.InfoManager.BackgroundSets[WzInfoTools.RemoveExtension(bgset.Name)] = bgset;
+                            InfoManager.BackgroundSets[WzInfoTools.RemoveExtension(bgset.Name)] = bgset;
                     }
                 }
             }
@@ -344,9 +360,9 @@ namespace HaCreator.Wz
                         id = WzInfoTools.AddLeadingZeros(map.Name, 9);
 
                     if (mapName == null)
-                        Program.InfoManager.Maps[id] = new Tuple<string, string>("", "");
+                        InfoManager.Maps[id] = new Tuple<string, string>("", "");
                     else
-                        Program.InfoManager.Maps[id] = new Tuple<string, string>(streetName?.Value == null ? string.Empty : streetName.Value, mapName.Value);
+                        InfoManager.Maps[id] = new Tuple<string, string>(streetName?.Value == null ? string.Empty : streetName.Value, mapName.Value);
                 }
             }
         }
@@ -358,7 +374,7 @@ namespace HaCreator.Wz
             for (int i = 0; i < editorParent.WzProperties.Count; i++)
             {
                 WzCanvasProperty portal = (WzCanvasProperty)editorParent.WzProperties[i];
-                Program.InfoManager.PortalTypeById.Add(portal.Name);
+                InfoManager.PortalTypeById.Add(portal.Name);
                 PortalInfo.Load(portal);
             }
 
@@ -379,7 +395,7 @@ namespace HaCreator.Wz
                         else
                             images.Add(image.Name, portalImage);
                     }
-                    Program.InfoManager.GamePortals.Add(portal.Name, new PortalGameImageInfo(defaultImage, images));
+                    InfoManager.GamePortals.Add(portal.Name, new PortalGameImageInfo(defaultImage, images));
                 }
                 else if (portal.WzProperties[0] is WzCanvasProperty)
                 {
@@ -395,7 +411,7 @@ namespace HaCreator.Wz
                             defaultImage = portalImage;
                             images.Add(image.Name, portalImage);
                         }
-                        Program.InfoManager.GamePortals.Add(portal.Name, new PortalGameImageInfo(defaultImage, images));
+                        InfoManager.GamePortals.Add(portal.Name, new PortalGameImageInfo(defaultImage, images));
                     }
                     catch (InvalidCastException) 
                     { 
@@ -404,9 +420,9 @@ namespace HaCreator.Wz
                 }
             }
 
-            for (int i = 0; i < Program.InfoManager.PortalTypeById.Count; i++)
+            for (int i = 0; i < InfoManager.PortalTypeById.Count; i++)
             {
-                Program.InfoManager.PortalIdByType[Program.InfoManager.PortalTypeById[i]] = i;
+                InfoManager.PortalIdByType[InfoManager.PortalTypeById[i]] = i;
             }
         }
         #endregion
@@ -426,7 +442,7 @@ namespace HaCreator.Wz
 
                 if (this.wzFiles.ContainsKey(mobWzFile_))
                 {
-                    WzObject mobImage = (WzImage)Program.WzManager[mobWzFile_][mobId + ".img"];
+                    WzObject mobImage = (WzImage)WzFileManager.Instance[mobWzFile_][mobId + ".img"];
 
                     if (mobImage != null)
                     {
@@ -471,7 +487,7 @@ namespace HaCreator.Wz
             foreach (string mapWzFile in MAP_WZ_FILES)
             {
                 string mapWzFile_ = mapWzFile.ToLower();
-                WzDirectory mapDir = (WzDirectory)Program.WzManager[mapWzFile_]?["Map"];
+                WzDirectory mapDir = (WzDirectory)WzFileManager.Instance[mapWzFile_]?["Map"];
                 if (mapDir != null)
                 {
                     WzDirectory catDir = (WzDirectory)mapDir[cat];
@@ -492,7 +508,7 @@ namespace HaCreator.Wz
                     {
                         WzStringProperty nameProp = (WzStringProperty)item["name"];
                         string name = nameProp == null ? "" : nameProp.Value;
-                        Program.InfoManager.Items.Add(WzInfoTools.AddLeadingZeros(item.Name, 7), name);
+                        InfoManager.Items.Add(WzInfoTools.AddLeadingZeros(item.Name, 7), name);
                     }
                 }*/
     }

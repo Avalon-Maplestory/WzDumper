@@ -49,7 +49,7 @@ namespace HaCreator.MapEditor.Info
 
         public static ReactorInfo Get(string id)
         {
-            ReactorInfo result = Program.InfoManager.Reactors[id];
+            ReactorInfo result = WzFileManager.Instance.InfoManager.Reactors[id];
             result.ParseImageIfNeeded();
             return result;
         }
@@ -85,9 +85,9 @@ namespace HaCreator.MapEditor.Info
             get {
                 WzStringProperty link = (WzStringProperty)((WzSubProperty)((WzImage)ParentObject)["info"])["link"];
                 if (link != null)
-                    _LinkedWzImage = (WzImage)Program.WzManager["reactor"][link.Value + ".img"];
+                    _LinkedWzImage = (WzImage)WzFileManager.Instance["reactor"][link.Value + ".img"];
                 else
-                    _LinkedWzImage = (WzImage)Program.WzManager["reactor"][id + ".img"];
+                    _LinkedWzImage = (WzImage)WzFileManager.Instance["reactor"][id + ".img"];
                 return _LinkedWzImage; 
             }
             set { this._LinkedWzImage = value; }

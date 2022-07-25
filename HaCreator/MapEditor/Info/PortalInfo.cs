@@ -35,7 +35,7 @@ namespace HaCreator.MapEditor.Info
                 parentObject.Name, 
                 parentObject.GetLinkedWzCanvasBitmap(), 
                 WzInfoTools.PointFToSystemPoint(parentObject.GetCanvasOriginPosition()), parentObject);
-            Program.InfoManager.Portals.Add(portal.type, portal);
+            WzFileManager.Instance.InfoManager.Portals.Add(portal.type, portal);
             return portal;
         }
 
@@ -97,7 +97,7 @@ namespace HaCreator.MapEditor.Info
 
         public static PortalInfo GetPortalInfoByType(string type)
         {
-            return Program.InfoManager.Portals[type];
+            return WzFileManager.Instance.InfoManager.Portals[type];
         }
     }
 }

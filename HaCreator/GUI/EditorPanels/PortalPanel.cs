@@ -7,6 +7,7 @@
 using HaCreator.CustomControls;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
+using HaCreator.Wz;
 using MapleLib.WzLib.WzStructure.Data;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace HaCreator.GUI.EditorPanels
         {
             this.hcsm = hcsm;
 
-            foreach (string pt in Program.InfoManager.PortalTypeById)
+            foreach (string pt in WzFileManager.Instance.InfoManager.PortalTypeById)
             {
                 PortalInfo pInfo = PortalInfo.GetPortalInfoByType(pt);
                 try

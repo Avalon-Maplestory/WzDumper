@@ -138,7 +138,7 @@ namespace HaCreator.GUI
         private List<string> SearchMapWzForObj(string l2)
         {
             List<string> result = new List<string>();
-            foreach (WzDirectory mapDir in ((WzDirectory)Program.WzManager["map"]["Map"]).WzDirectories)
+            foreach (WzDirectory mapDir in ((WzDirectory)WzFileManager.Instance["map"]["Map"]).WzDirectories)
             {
                 foreach (WzImage mapImg in mapDir.WzImages)
                 {

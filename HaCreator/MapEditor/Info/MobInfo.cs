@@ -59,7 +59,7 @@ namespace HaCreator.MapEditor.Info
         {
             foreach (string mobWzFile in WzFileManager.MOB_WZ_FILES)
             {
-                WzImage mobImage = (WzImage)Program.WzManager[mobWzFile.ToLower()]?[id + ".img"];
+                WzImage mobImage = (WzImage)WzFileManager.Instance[mobWzFile.ToLower()]?[id + ".img"];
                 if (mobImage == null)
                     continue;
 
@@ -120,9 +120,9 @@ namespace HaCreator.MapEditor.Info
             get {
                 WzStringProperty link = (WzStringProperty)((WzSubProperty)((WzImage)ParentObject)["info"])["link"];
                 if (link != null)
-                    _LinkedWzImage = Program.WzManager.FindMobImage(link.Value);
+                    _LinkedWzImage = WzFileManager.Instance.FindMobImage(link.Value);
                 else
-                    _LinkedWzImage = Program.WzManager.FindMobImage(id); // default
+                    _LinkedWzImage = WzFileManager.Instance.FindMobImage(id); // default
 
                 return _LinkedWzImage; 
             }

@@ -405,6 +405,7 @@
     <Compile Include="MapEditor\UndoRedo\UndoRedoAction.cs" />
     <Compile Include="MapEditor\UndoRedo\UndoRedoBatch.cs" />
     <Compile Include="MapEditor\UserObjectsManager.cs" />
+    <Compile Include="MapSimulator\MapDumper.cs" />
     <Compile Include="MapSimulator\MapObjects\FieldObject\BackgroundItem.cs" />
     <Compile Include="MapSimulator\MapObjects\FieldObject\MobItem.cs" />
     <Compile Include="MapSimulator\MapObjects\FieldObject\TooltipItem.cs" />
@@ -848,7 +849,7 @@
       <Version>3.8.0.1641</Version>
     </PackageReference>
     <PackageReference Include="NAudio">
-      <Version>2.0.0</Version>
+      <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>

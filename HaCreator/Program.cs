@@ -23,8 +23,6 @@ namespace HaCreator
 {
     static class Program
     {
-        public static WzFileManager WzManager;
-        public static WzInformationManager InfoManager;
         public static WzSettingsManager SettingsManager;
         public static bool AbortThreads = false;
         public static bool Restarting;
@@ -72,7 +70,6 @@ namespace HaCreator
 
 
             Properties.Resources.Culture = CultureInfo.CurrentCulture;
-            InfoManager = new WzInformationManager();
             SettingsManager = new WzSettingsManager(GetLocalSettingsPath(), typeof(UserSettings), typeof(ApplicationSettings), typeof(Microsoft.Xna.Framework.Color));
             SettingsManager.LoadSettings();
            
