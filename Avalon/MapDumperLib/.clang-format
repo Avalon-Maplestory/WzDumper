@@ -1,0 +1,11 @@
+﻿---
+BasedOnStyle: WebKit
+BreakBeforeBraces: Allman
+BreakConstructorInitializers: AfterColon
+CompactNamespaces: 'false'
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
+FixNamespaceComments: 'true'
+IndentWidth: '4'
+NamespaceIndentation: All
+
+...
