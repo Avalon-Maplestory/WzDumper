@@ -159,8 +159,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HaCreator\HaCreator.csproj">
-      <Project>{679dd557-5e1e-447e-b48c-0f082e5fb1f4}</Project>
+    <ProjectReference Include="..\MapData\MapData.csproj">
+      <Project>{605156c9-f8ea-48c2-942b-32221d033ef1}</Project>
     </ProjectReference>
     <ProjectReference Include="..\MapDumperCS\MapDumperCS.csproj">
       <Project>{585b6b62-50bf-45d2-a9df-253b1d4cd353}</Project>
