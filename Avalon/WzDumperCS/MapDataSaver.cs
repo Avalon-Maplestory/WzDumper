@@ -8,16 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using static HaCreator.MapSimulator.MapSimulator;
 
-namespace MapDumperCS
+namespace WzDumperCS
 {
     public static class MapDataSaver
     {
-        public static string ToJson(this MapDumper.MapData mapData)
+        public static string ToJson(this WzDumper.MapData mapData)
         {
             return JsonConvert.SerializeObject(mapData, Formatting.Indented);
         }
 
-        public static void SaveMapAssets(this MapDumper.MapData mapData, string assetsDirectory)
+        public static void SaveMapAssets(this WzDumper.MapData mapData, string assetsDirectory)
         {
             if (!Directory.Exists(assetsDirectory))
             {

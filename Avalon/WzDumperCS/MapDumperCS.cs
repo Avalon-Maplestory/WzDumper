@@ -16,7 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static HaCreator.MapSimulator.MapSimulator;
 
-namespace MapDumperCS
+namespace WzDumperCS
 {
     public class MapDumperCS
     {
@@ -25,12 +25,12 @@ namespace MapDumperCS
             InitializeWzFiles(maplestoryDirectory);
         }
 
-        public List<MapDumper.AvailableMap> GetAvailableMaps()
+        public List<WzDumper.AvailableMap> GetAvailableMaps()
         {
-            var maps = new List<MapDumper.AvailableMap>();
+            var maps = new List<WzDumper.AvailableMap>();
             foreach (var (mapId, mapStreetName, mapName) in WzFileManager.Instance.InfoManager.Maps.Select(map => (map.Key, map.Value.Item1, map.Value.Item2)))
             {
-                maps.Add(new MapDumper.AvailableMap() {
+                maps.Add(new WzDumper.AvailableMap() {
                     mapId = int.Parse(mapId),
                     mapName = $"{mapStreetName} : {mapName}"
                 });
@@ -38,9 +38,9 @@ namespace MapDumperCS
             return maps.OrderBy(map => map.mapId).ToList();
         }
 
-        public MapDumper.MapData DumpMap(int mapId)
+        public WzDumper.MapData DumpMap(int mapId)
         {
-            var mapData = new MapDumper.MapData();
+            var mapData = new WzDumper.MapData();
 
             var thread = new Thread(() =>
             {

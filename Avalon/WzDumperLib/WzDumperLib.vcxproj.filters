@@ -1,28 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="MapDumperLib\MapDumper.hpp">
+    <ClInclude Include="WzDumperLib\MapDumper.hpp">
       <Filter>MapDumper</Filter>
     </ClInclude>
-    <ClInclude Include="MapDumperLib\Converters.hpp">
+    <ClInclude Include="WzDumperLib\Converters.hpp">
       <Filter>Converters</Filter>
     </ClInclude>
-    <ClInclude Include="MapDumperLib\MapDumperProxy.hpp">
+    <ClInclude Include="WzDumperLib\MapDumperProxy.hpp">
       <Filter>MapDumperProxy</Filter>
     </ClInclude>
-    <ClInclude Include="MapDumperLib\MapData.hpp">
+    <ClInclude Include="WzDumperLib\MapData.hpp">
       <Filter>MapData</Filter>
     </ClInclude>
-    <ClInclude Include="MapDumperLib\Types.hpp">
+    <ClInclude Include="WzDumperLib\Types.hpp">
       <Filter>Types</Filter>
     </ClInclude>
-    <ClInclude Include="MapDumperLib\TypesConverters.hpp">
+    <ClInclude Include="WzDumperLib\TypesConverters.hpp">
       <Filter>Types</Filter>
     </ClInclude>
-    <ClInclude Include="MapDumperLib\MapDataConverters.hpp">
+    <ClInclude Include="WzDumperLib\MapDataConverters.hpp">
       <Filter>MapData</Filter>
     </ClInclude>
-    <ClInclude Include="MapDumperLib\MapDumperLib.hpp" />
+    <ClInclude Include="WzDumperLib\WzDumperLib.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MapDumper">
@@ -42,19 +42,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MapDumperLib\MapDumper.cpp">
+    <ClCompile Include="WzDumperLib\MapDumper.cpp">
       <Filter>MapDumper</Filter>
     </ClCompile>
-    <ClCompile Include="MapDumperLib\Converters.cpp">
+    <ClCompile Include="WzDumperLib\Converters.cpp">
       <Filter>Converters</Filter>
     </ClCompile>
-    <ClCompile Include="MapDumperLib\MapDumperProxy.cpp">
+    <ClCompile Include="WzDumperLib\MapDumperProxy.cpp">
       <Filter>MapDumperProxy</Filter>
     </ClCompile>
-    <ClCompile Include="MapDumperLib\MapData.cpp">
+    <ClCompile Include="WzDumperLib\MapData.cpp">
       <Filter>MapData</Filter>
     </ClCompile>
-    <ClCompile Include="MapDumperLib\Types.cpp">
+    <ClCompile Include="WzDumperLib\Types.cpp">
       <Filter>Types</Filter>
     </ClCompile>
   </ItemGroup>

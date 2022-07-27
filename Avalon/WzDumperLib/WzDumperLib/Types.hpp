@@ -3,17 +3,17 @@
 #include <list>
 #include <string>
 
-#include "MapDumperLib.hpp"
+#include "WzDumperLib.hpp"
 
-namespace MapDumperLib
+namespace WzDumperLib
 {
-    struct MAPDUMPERLIB_API Point
+    struct WZDUMPERLIB_API Point
     {
         int x;
         int y;
     };
 
-    struct MAPDUMPERLIB_API Size
+    struct WZDUMPERLIB_API Size
     {
         int width;
         int height;

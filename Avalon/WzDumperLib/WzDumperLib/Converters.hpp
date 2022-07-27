@@ -4,7 +4,7 @@
 #include <string>
 #include <msclr/auto_handle.h>
 
-namespace MapDumperLib
+namespace WzDumperLib
 {
     template <typename TManaged>
     using native_type_t = decltype(to_native(std::declval<TManaged>()));

@@ -16,14 +16,14 @@ namespace HaCreator.MapSimulator
 {
     public partial class MapSimulator
     {
-        public MapDumper.MapData DumpMap()
+        public WzDumper.MapData DumpMap()
         {
-            var mapData = new MapDumper.MapData() {
-                mapSize = new MapDumper.Size() {
+            var mapData = new WzDumper.MapData() {
+                mapSize = new WzDumper.Size() {
                     width = vr_fieldBoundary.Width - vr_fieldBoundary.X,
                     height = vr_fieldBoundary.Height - vr_fieldBoundary.Y
                 },
-                assets = new MapDumper.Assets() {
+                assets = new WzDumper.Assets() {
                     bitmaps = new Dictionary<string, Bitmap>()
                 }
             };
@@ -35,20 +35,20 @@ namespace HaCreator.MapSimulator
             return mapData;
         }
 
-        private void DumpTiles(ref MapDumper.MapData mapData)
+        private void DumpTiles(ref WzDumper.MapData mapData)
         {
-            var layers = new List<MapDumper.Layer>();
+            var layers = new List<WzDumper.Layer>();
             foreach (var (layer, layer_index) in mapObjects.Select((value, index) => (value, index)))
             {
                 Console.Write($"  Dumping layer {layer_index}... ");
 
-                var layerData = new MapDumper.Layer() {
-                    tiles = new List<MapDumper.Tile>()
+                var layerData = new WzDumper.Layer() {
+                    tiles = new List<WzDumper.Tile>()
                 };
 
                 foreach (var obj in layer)
                 {
-                    var frames = new List<MapDumper.Frame>();
+                    var frames = new List<WzDumper.Frame>();
                     if (obj.frames.Count == 0)
                     {
                         throw new NotImplementedException();
@@ -63,9 +63,9 @@ namespace HaCreator.MapSimulator
                         int x = centerX + frame.X - vr_fieldBoundary.X;
                         int y = centerY + frame.Y - vr_fieldBoundary.Y;
 
-                        var frameData = new MapDumper.Frame() {
+                        var frameData = new WzDumper.Frame() {
                             durationMs = (frame.Delay * 1000) / 60, // convert to milliseconds, devide by 60 fps
-                            position = new MapDumper.Point() {
+                            position = new WzDumper.Point() {
                                 x = x,
                                 y = y
                             }
@@ -88,7 +88,7 @@ namespace HaCreator.MapSimulator
                         frames.Add(frameData);
                     }
 
-                    var tileData = new MapDumper.Tile() {
+                    var tileData = new WzDumper.Tile() {
                         frames = frames
                     };
 

@@ -732,7 +732,7 @@
     <EmbeddedResource Include="Properties\Resources.zh-CHT.resx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Avalon\MapData\MapData.csproj">
+    <ProjectReference Include="..\Avalon\WzData\WzData.csproj">
       <Project>{605156c9-f8ea-48c2-942b-32221d033ef1}</Project>
       <Name>MapData</Name>
     </ProjectReference>

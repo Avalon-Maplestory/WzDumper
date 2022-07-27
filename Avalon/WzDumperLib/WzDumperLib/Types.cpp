@@ -1,7 +1,7 @@
 #include "TypesConverters.hpp"
 #include "Converters.hpp"
 
-MapDumperLib::Point MapDumperLib::to_native(MapDumper::Point^ managed)
+WzDumperLib::Point WzDumperLib::to_native(::WzDumper::Point ^ managed)
 {
     return {
         to_native(managed->x),
@@ -9,7 +9,7 @@ MapDumperLib::Point MapDumperLib::to_native(MapDumper::Point^ managed)
     };
 }
 
-MapDumperLib::Size MapDumperLib::to_native(MapDumper::Size^ managed)
+WzDumperLib::Size WzDumperLib::to_native(::WzDumper::Size ^ managed)
 {
     return {
         to_native(managed->width),

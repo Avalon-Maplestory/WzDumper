@@ -4,7 +4,7 @@
 #include <msclr/auto_gcroot.h>
 #include "MapData.hpp"
 
-namespace MapDumperLib
+namespace WzDumperLib
 {
     class MapDumperProxy
     {
@@ -15,6 +15,6 @@ namespace MapDumperLib
         [[nodiscard]] std::list<AvailableMap> getAvailableMaps();
 
     private:
-        msclr::auto_gcroot<MapDumperCS::MapDumperCS^> m_dumper;
+        msclr::auto_gcroot<::WzDumperCS::MapDumperCS ^> m_dumper;
     };
 } // namespace MapDumperLib

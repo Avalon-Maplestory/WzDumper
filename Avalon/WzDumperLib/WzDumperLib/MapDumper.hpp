@@ -3,14 +3,14 @@
 #include <filesystem>
 #include <memory>
 #include "MapData.hpp"
-#include "MapDumperLib.hpp"
+#include "WzDumperLib.hpp"
 
-namespace MapDumperLib
+namespace WzDumperLib
 {
     // Forward declaration
     class MapDumperProxy;
 
-    class MAPDUMPERLIB_API MapDumper
+    class WZDUMPERLIB_API MapDumper
     {
     public:
         MapDumper(std::filesystem::path maplestoryDirectory);

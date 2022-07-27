@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static HaCreator.MapSimulator.MapSimulator;
 
-namespace MapDumperCS
+namespace WzDumperCS
 {
     public static class MapDataPreview
     {
-        public static void ShowMapPreview(this MapDumper.MapData mapData, bool procedural = false)
+        public static void ShowMapPreview(this WzDumper.MapData mapData, bool procedural = false)
         {
             var bitmap = new Bitmap(mapData.mapSize.width, mapData.mapSize.height);
             var graphics = Graphics.FromImage(bitmap);
@@ -44,7 +44,7 @@ namespace MapDumperCS
             }
         }
 
-        private static void RenderTiles(MapDumper.MapData mapData, Graphics graphics, PictureBox pictureBox, bool procedural)
+        private static void RenderTiles(WzDumper.MapData mapData, Graphics graphics, PictureBox pictureBox, bool procedural)
         {
             foreach (var layer in mapData.layers)
             {

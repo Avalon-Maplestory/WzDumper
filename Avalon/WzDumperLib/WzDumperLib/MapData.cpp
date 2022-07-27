@@ -2,7 +2,7 @@
 #include "TypesConverters.hpp"
 #include "Converters.hpp"
 
-MapDumperLib::Frame MapDumperLib::to_native(::MapDumper::Frame^ managed)
+WzDumperLib::Frame WzDumperLib::to_native(::WzDumper::Frame ^ managed)
 {
     return {
         to_native(managed->bitmapPath),
@@ -11,21 +11,21 @@ MapDumperLib::Frame MapDumperLib::to_native(::MapDumper::Frame^ managed)
     };
 }
 
-MapDumperLib::Tile MapDumperLib::to_native(::MapDumper::Tile ^ managed)
+WzDumperLib::Tile WzDumperLib::to_native(::WzDumper::Tile ^ managed)
 {
     return {
         to_native_list(managed->frames)
     };
 }
 
-MapDumperLib::Layer MapDumperLib::to_native(::MapDumper::Layer ^ managed)
+WzDumperLib::Layer WzDumperLib::to_native(::WzDumper::Layer ^ managed)
 {
     return {
         to_native_list(managed->tiles)
     };
 }
 
-MapDumperLib::MapData MapDumperLib::to_native(::MapDumper::MapData ^ managed)
+WzDumperLib::MapData WzDumperLib::to_native(::WzDumper::MapData ^ managed)
 {
     return {
         to_native(managed->mapSize),
@@ -33,7 +33,7 @@ MapDumperLib::MapData MapDumperLib::to_native(::MapDumper::MapData ^ managed)
     };
 }
 
-MapDumperLib::AvailableMap MapDumperLib::to_native(::MapDumper::AvailableMap^ managed)
+WzDumperLib::AvailableMap WzDumperLib::to_native(::WzDumper::AvailableMap ^ managed)
 {
     return {
         to_native(managed->mapId),
