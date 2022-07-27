@@ -173,7 +173,7 @@ namespace HaRepacker.GUI
                         {
                             File.Delete(dialog.FileName);
                             File.Move(dialog.FileName + "$tmp", dialog.FileName);
-                        }catch(IOException ex)
+                        }catch(IOException)
                         {
                             MessageBox.Show("Handle error overwriting WZ file", HaRepacker.Properties.Resources.Error);
                         }

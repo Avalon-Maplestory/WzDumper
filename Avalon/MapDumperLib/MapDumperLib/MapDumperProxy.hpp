@@ -12,6 +12,7 @@ namespace MapDumperLib
         MapDumperProxy(std::filesystem::path maplestoryDirectory);
 
         [[nodiscard]] MapData dump(int mapId, std::filesystem::path assetsDumpDirectory);
+        [[nodiscard]] std::list<AvailableMap> getAvailableMaps();
 
     private:
         msclr::auto_gcroot<MapDumperCS::MapDumperCS^> m_dumper;

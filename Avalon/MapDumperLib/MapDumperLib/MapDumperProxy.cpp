@@ -15,3 +15,8 @@ MapDumperLib::MapData MapDumperLib::MapDumperProxy::dump(int mapId, std::filesys
 
     return to_native(map);
 }
+
+std::list<MapDumperLib::AvailableMap> MapDumperLib::MapDumperProxy::getAvailableMaps()
+{
+    return to_native_list(m_dumper->GetAvailableMaps());
+}

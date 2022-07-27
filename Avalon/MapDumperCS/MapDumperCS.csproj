@@ -7,9 +7,9 @@
     <ProjectGuid>{585B6B62-50BF-45D2-A9DF-253B1D4CD353}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MauDumperCS</RootNamespace>
-    <AssemblyName>MauDumperCS</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <RootNamespace>MapDumperCS</RootNamespace>
+    <AssemblyName>MapDumperCS</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>

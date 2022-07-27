@@ -36,7 +36,7 @@ namespace HaCreator.MapSimulator
     /// </summary>
     public partial class MapSimulator : Microsoft.Xna.Framework.Game
     {
-        const bool BGM = false;
+        const bool BGM = true;
         const bool TILES = true;
         const bool BACKGROUND = true;
         const bool REACTORS = true;

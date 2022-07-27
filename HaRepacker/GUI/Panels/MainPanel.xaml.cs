@@ -50,13 +50,10 @@ namespace HaRepacker.GUI.Panels
         private UndoRedoManager undoRedoMan;
 
         private bool isSelectingWzMapFieldLimit = false;
-        private bool isLoading = false;
-
+        
         public MainPanel()
         {
             InitializeComponent();
-
-            isLoading = true;
 
             // undo redo
             undoRedoMan = new UndoRedoManager(this);
@@ -92,9 +89,6 @@ namespace HaRepacker.GUI.Panels
 
             textEditor.SaveButtonClicked += TextEditor_SaveButtonClicked;
             Loaded += MainPanelXAML_Loaded;
-
-
-            isLoading = false;
         }
 
         private void MainPanelXAML_Loaded(object sender, RoutedEventArgs e)
@@ -1252,7 +1246,7 @@ namespace HaRepacker.GUI.Panels
                     {
                         bmp = (System.Drawing.Bitmap)System.Drawing.Image.FromFile(files[0]);
                     }
-                    catch (Exception exp)
+                    catch (Exception)
                     {
                         return;
                     }

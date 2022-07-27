@@ -117,7 +117,6 @@ namespace HaCreator.MapEditor
             this.multiBoard.LoadRequested += Ribbon_OpenClicked;
             this.multiBoard.CloseTabRequested += MultiBoard_CloseTabRequested;
             this.multiBoard.SwitchTabRequested += MultiBoard_SwitchTabRequested;
-            this.multiBoard.BackupCheck += MultiBoard_BackupCheck;
             this.multiBoard.BoardRemoved += MultiBoard_BoardRemoved;
             this.multiBoard.MinimapStateChanged += MultiBoard_MinimapStateChanged;
 

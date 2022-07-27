@@ -35,4 +35,10 @@ namespace MapDumper
         public Assets assets;
         public List<Layer> layers;
     }
+
+    public struct AvailableMap
+    {
+        public int mapId;
+        public string mapName;
+    }
 }

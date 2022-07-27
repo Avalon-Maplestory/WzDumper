@@ -1,27 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="MapDumper.hpp">
+    <ClInclude Include="MapDumperLib\MapDumper.hpp">
       <Filter>MapDumper</Filter>
     </ClInclude>
-    <ClInclude Include="Converters.hpp">
+    <ClInclude Include="MapDumperLib\Converters.hpp">
       <Filter>Converters</Filter>
     </ClInclude>
-    <ClInclude Include="MapDumperProxy.hpp">
+    <ClInclude Include="MapDumperLib\MapDumperProxy.hpp">
       <Filter>MapDumperProxy</Filter>
     </ClInclude>
-    <ClInclude Include="MapData.hpp">
+    <ClInclude Include="MapDumperLib\MapData.hpp">
       <Filter>MapData</Filter>
     </ClInclude>
-    <ClInclude Include="Types.hpp">
+    <ClInclude Include="MapDumperLib\Types.hpp">
       <Filter>Types</Filter>
     </ClInclude>
-    <ClInclude Include="TypesConverters.hpp">
+    <ClInclude Include="MapDumperLib\TypesConverters.hpp">
       <Filter>Types</Filter>
     </ClInclude>
-    <ClInclude Include="MapDataConverters.hpp">
+    <ClInclude Include="MapDumperLib\MapDataConverters.hpp">
       <Filter>MapData</Filter>
     </ClInclude>
+    <ClInclude Include="MapDumperLib\MapDumperLib.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MapDumper">
@@ -41,19 +42,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MapDumper.cpp">
+    <ClCompile Include="MapDumperLib\MapDumper.cpp">
       <Filter>MapDumper</Filter>
     </ClCompile>
-    <ClCompile Include="Converters.cpp">
+    <ClCompile Include="MapDumperLib\Converters.cpp">
       <Filter>Converters</Filter>
     </ClCompile>
-    <ClCompile Include="MapDumperProxy.cpp">
+    <ClCompile Include="MapDumperLib\MapDumperProxy.cpp">
       <Filter>MapDumperProxy</Filter>
     </ClCompile>
-    <ClCompile Include="MapData.cpp">
+    <ClCompile Include="MapDumperLib\MapData.cpp">
       <Filter>MapData</Filter>
     </ClCompile>
-    <ClCompile Include="Types.cpp">
+    <ClCompile Include="MapDumperLib\Types.cpp">
       <Filter>Types</Filter>
     </ClCompile>
   </ItemGroup>

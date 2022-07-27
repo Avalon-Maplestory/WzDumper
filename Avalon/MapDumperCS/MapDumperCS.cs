@@ -25,14 +25,17 @@ namespace MapDumperCS
             InitializeWzFiles(maplestoryDirectory);
         }
 
-        public List<KeyValuePair<int, string>> GetAvailableMaps()
+        public List<MapDumper.AvailableMap> GetAvailableMaps()
         {
-            List<KeyValuePair<int, string>> maps = new List<KeyValuePair<int, string>>();
+            var maps = new List<MapDumper.AvailableMap>();
             foreach (var (mapId, mapStreetName, mapName) in WzFileManager.Instance.InfoManager.Maps.Select(map => (map.Key, map.Value.Item1, map.Value.Item2)))
             {
-                maps.Add(new KeyValuePair<int, string>(int.Parse(mapId), $"{mapStreetName} : {mapName}"));
+                maps.Add(new MapDumper.AvailableMap() {
+                    mapId = int.Parse(mapId),
+                    mapName = $"{mapStreetName} : {mapName}"
+                });
             }
-            return maps.OrderBy(map => map.Key).ToList();
+            return maps.OrderBy(map => map.mapId).ToList();
         }
 
         public MapDumper.MapData DumpMap(int mapId)

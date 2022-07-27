@@ -8,4 +8,5 @@ namespace MapDumperLib
     Tile to_native(::MapDumper::Tile^ managed);
     Layer to_native(::MapDumper::Layer^ managed);
     MapData to_native(::MapDumper::MapData^ managed);
+    AvailableMap to_native(::MapDumper::AvailableMap^ managed);
 } // namespace MapDumperLib

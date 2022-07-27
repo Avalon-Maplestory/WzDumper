@@ -3,15 +3,17 @@
 #include <list>
 #include <string>
 
+#include "MapDumperLib.hpp"
+
 namespace MapDumperLib
 {
-    struct Point
+    struct MAPDUMPERLIB_API Point
     {
         int x;
         int y;
     };
 
-    struct Size
+    struct MAPDUMPERLIB_API Size
     {
         int width;
         int height;

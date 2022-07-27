@@ -610,7 +610,6 @@ namespace HaCreator.MapEditor
         public event HaCreator.GUI.HaRibbon.EmptyEvent LoadRequested;
         public event HaCreator.GUI.HaRibbon.EmptyEvent CloseTabRequested;
         public event EventHandler<bool> SwitchTabRequested;
-        public event HaCreator.GUI.HaRibbon.EmptyEvent BackupCheck;
 
         /// <summary>
         /// Mouse click

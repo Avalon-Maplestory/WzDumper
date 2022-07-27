@@ -4,26 +4,32 @@
 
 namespace MapDumperLib
 {
-    struct Frame
+    struct MAPDUMPERLIB_API Frame
     {
         std::wstring bitmapPath;
         int durationMs;
         Point position;
     };
 
-    struct Tile
+    struct MAPDUMPERLIB_API Tile
     {
         std::list<Frame> frames;
     };
 
-    struct Layer
+    struct MAPDUMPERLIB_API Layer
     {
         std::list<Tile> tiles;
     };
 
-    struct MapData
+    struct MAPDUMPERLIB_API MapData
     {
         Size mapSize;
         std::list<Layer> layers;
+    };
+
+    struct MAPDUMPERLIB_API AvailableMap
+    {
+        int mapId;
+        std::wstring mapName;
     };
 } // namespace MapDumperLib

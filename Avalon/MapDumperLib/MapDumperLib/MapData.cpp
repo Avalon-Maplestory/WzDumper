@@ -32,3 +32,11 @@ MapDumperLib::MapData MapDumperLib::to_native(::MapDumper::MapData ^ managed)
         to_native_list(managed->layers)
     };
 }
+
+MapDumperLib::AvailableMap MapDumperLib::to_native(::MapDumper::AvailableMap^ managed)
+{
+    return {
+        to_native(managed->mapId),
+        to_native(managed->mapName)
+    };
+}
