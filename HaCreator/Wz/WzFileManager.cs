@@ -74,9 +74,25 @@ namespace HaCreator.Wz
                 return _instance;
             }
         }
-        public static void Init(string directory, WzMapleVersion version = WzMapleVersion.GENERATE)
+
+        public static void Initialize(string directory, WzMapleVersion version = WzMapleVersion.GENERATE)
         {
+            if (_instance != null)
+            {
+                throw new InvalidOperationException("WzFileManager was already initialized");
+            }
+
             _instance = new WzFileManager(directory, version);
+        }
+
+        public static void Uninitialize()
+        {
+            if (_instance == null)
+            {
+                throw new InvalidOperationException("WzFileManager was not initialized");
+            }
+
+            _instance = null;
         }
 
         private WzFileManager(string directory, WzMapleVersion version)

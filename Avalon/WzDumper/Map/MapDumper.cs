@@ -16,21 +16,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using static HaCreator.MapSimulator.MapSimulator;
 
-namespace WzDumperCS
+namespace WzDumper.Map
 {
-    public class MapDumperCS
+    public static class MapDumper
     {
-        public MapDumperCS(string maplestoryDirectory)
+        public static List<WzData.AvailableMap> GetAvailableMaps(this WzDumper _)
         {
-            InitializeWzFiles(maplestoryDirectory);
-        }
-
-        public List<WzDumper.AvailableMap> GetAvailableMaps()
-        {
-            var maps = new List<WzDumper.AvailableMap>();
+            var maps = new List<WzData.AvailableMap>();
             foreach (var (mapId, mapStreetName, mapName) in WzFileManager.Instance.InfoManager.Maps.Select(map => (map.Key, map.Value.Item1, map.Value.Item2)))
             {
-                maps.Add(new WzDumper.AvailableMap() {
+                maps.Add(new WzData.AvailableMap() {
                     mapId = int.Parse(mapId),
                     mapName = $"{mapStreetName} : {mapName}"
                 });
@@ -38,9 +33,9 @@ namespace WzDumperCS
             return maps.OrderBy(map => map.mapId).ToList();
         }
 
-        public WzDumper.MapData DumpMap(int mapId)
+        public static WzData.MapData DumpMap(this WzDumper _, int mapId)
         {
-            var mapData = new WzDumper.MapData();
+            var mapData = new WzData.MapData();
 
             var thread = new Thread(() =>
             {
@@ -124,90 +119,5 @@ namespace WzDumperCS
 
             return mapData;
         }
-
-        #region Implementation
-
-        private void InitializeWzFiles(string wzPath)
-        {
-            WzFileManager.Init(wzPath);
-
-            if (WzFileManager.Instance.HasDataFile) //currently always false
-            {
-                Console.WriteLine("Initializing Data.wz...");
-
-                WzFileManager.Instance.LoadDataWzFile("data");
-                WzFileManager.Instance.ExtractStringWzMaps();
-                WzFileManager.Instance.ExtractMobFile();
-                WzFileManager.Instance.ExtractNpcFile();
-                WzFileManager.Instance.ExtractReactorFile();
-                WzFileManager.Instance.ExtractSoundFile("sound");
-                WzFileManager.Instance.ExtractMapMarks();
-                WzFileManager.Instance.ExtractPortals();
-                WzFileManager.Instance.ExtractTileSets();
-                WzFileManager.Instance.ExtractObjSets();
-                WzFileManager.Instance.ExtractBackgroundSets();
-            }
-            else
-            {
-                Console.WriteLine("Initializing String.wz...");
-
-                WzFileManager.Instance.LoadWzFile("string");
-                WzFileManager.Instance.ExtractStringWzMaps();
-
-                // Mob WZ
-                foreach (string mobWZFile in WzFileManager.MOB_WZ_FILES)
-                {
-                    Console.WriteLine(string.Format("Initializing {0}.wz...", mobWZFile));
-
-                    WzFileManager.Instance.LoadWzFile(mobWZFile.ToLower());
-                }
-                WzFileManager.Instance.ExtractMobFile();
-
-                Console.WriteLine("Initializing Npc.wz...");
-
-                WzFileManager.Instance.LoadWzFile("npc");
-                WzFileManager.Instance.ExtractNpcFile();
-
-                Console.WriteLine("Initializing Reactor.wz...");
-
-                WzFileManager.Instance.LoadWzFile("reactor");
-                WzFileManager.Instance.ExtractReactorFile();
-
-                // Load sound
-                foreach (string soundWzFile in WzFileManager.SOUND_WZ_FILES)
-                {
-                    Console.WriteLine(string.Format("Initializing {0}.wz...", soundWzFile));
-    
-                    WzFileManager.Instance.LoadWzFile(soundWzFile.ToLower());
-                    WzFileManager.Instance.ExtractSoundFile(soundWzFile.ToLower());
-                }
-
-                Console.WriteLine("Initializing Map.wz...");
-
-                WzFileManager.Instance.LoadWzFile("map");
-                WzFileManager.Instance.ExtractMapMarks();
-                WzFileManager.Instance.ExtractPortals();
-                WzFileManager.Instance.ExtractTileSets();
-                WzFileManager.Instance.ExtractObjSets();
-                WzFileManager.Instance.ExtractBackgroundSets();
-
-                foreach (string mapwzFile in WzFileManager.MAP_WZ_FILES)
-                {
-                    if (WzFileManager.Instance.LoadWzFile(mapwzFile.ToLower()))
-                    {
-                        Console.WriteLine(string.Format("Initializing {0}.wz...", mapwzFile));
-        
-                        WzFileManager.Instance.ExtractBackgroundSets();
-                        WzFileManager.Instance.ExtractObjSets();
-                    }
-                }
-
-                Console.WriteLine("Initializing UI.wz...");
-
-                WzFileManager.Instance.LoadWzFile("ui");
-            }
-        }
-
-        #endregion
     }
 }

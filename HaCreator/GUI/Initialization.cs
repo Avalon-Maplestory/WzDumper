@@ -86,7 +86,7 @@ namespace HaCreator.GUI
 
         private void InitializeWzFiles(string wzPath, WzMapleVersion fileVersion)
         {
-            WzFileManager.Init(wzPath, fileVersion);
+            WzFileManager.Initialize(wzPath, fileVersion);
             
             if (WzFileManager.Instance.HasDataFile) //currently always false
             {
