@@ -12,12 +12,7 @@ namespace WzDumper.Map
 {
     public static class MapDataSaver
     {
-        public static string ToJson(this WzData.MapData mapData)
-        {
-            return JsonConvert.SerializeObject(mapData, Formatting.Indented);
-        }
-
-        public static void SaveMapAssets(this WzData.MapData mapData, string assetsDirectory)
+        public static void SaveTo(this WzData.Assets assets, string assetsDirectory)
         {
             if (!Directory.Exists(assetsDirectory))
             {
@@ -25,7 +20,7 @@ namespace WzDumper.Map
             }
 
             Console.WriteLine("Saving bitmaps...");
-            foreach (var (path, bitmap) in mapData.assets.bitmaps.Select(pair => (pair.Key, pair.Value)))
+            foreach (var (path, bitmap) in assets.bitmaps.Select(pair => (pair.Key, pair.Value)))
             {
                 var filePath = $"{Path.Combine(assetsDirectory, path)}.png";
                 if (!File.Exists(filePath))

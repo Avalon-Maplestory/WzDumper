@@ -32,7 +32,6 @@ namespace WzDumper.WzData
     public struct MapData
     {
         public Size mapSize;
-        public Assets assets;
         public List<Layer> layers;
     }
 

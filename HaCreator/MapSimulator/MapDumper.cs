@@ -16,26 +16,27 @@ namespace HaCreator.MapSimulator
 {
     public partial class MapSimulator
     {
-        public WzDumper.WzData.MapData DumpMap()
+        public (WzDumper.WzData.MapData, WzDumper.WzData.Assets) DumpMap()
         {
             var mapData = new WzDumper.WzData.MapData() {
                 mapSize = new WzDumper.WzData.Size() {
                     width = vr_fieldBoundary.Width - vr_fieldBoundary.X,
                     height = vr_fieldBoundary.Height - vr_fieldBoundary.Y
-                },
-                assets = new WzDumper.WzData.Assets() {
-                    bitmaps = new Dictionary<string, Bitmap>()
                 }
+            };
+
+            var assets = new WzDumper.WzData.Assets() {
+                bitmaps = new Dictionary<string, Bitmap>()
             };
 
             Console.WriteLine($"Map size: {{{mapData.mapSize.width} {mapData.mapSize.height}}}");
             Console.WriteLine($"Dumping tiles...");
-            DumpTiles(ref mapData);
+            DumpTiles(ref mapData, ref assets);
 
-            return mapData;
+            return (mapData, assets);
         }
 
-        private void DumpTiles(ref WzDumper.WzData.MapData mapData)
+        private void DumpTiles(ref WzDumper.WzData.MapData mapData, ref WzDumper.WzData.Assets assets)
         {
             var layers = new List<WzDumper.WzData.Layer>();
             foreach (var (layer, layer_index) in mapObjects.Select((value, index) => (value, index)))
@@ -75,9 +76,9 @@ namespace HaCreator.MapSimulator
                         {
                             frameData.bitmapPath = canvas.FullPath;
 
-                            if (!mapData.assets.bitmaps.ContainsKey(frameData.bitmapPath))
+                            if (!assets.bitmaps.ContainsKey(frameData.bitmapPath))
                             {
-                                mapData.assets.bitmaps[frameData.bitmapPath] = canvas.GetLinkedWzCanvasBitmap();
+                                assets.bitmaps[frameData.bitmapPath] = canvas.GetLinkedWzCanvasBitmap();
                             }
                         }
                         else

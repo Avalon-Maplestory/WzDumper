@@ -29,10 +29,12 @@ namespace WzDumper
                 throw new InvalidOperationException("WzDumper was already initialized");
             }
 
-            _instance = new WzDumper(maplestoryDirectory);
+            var dumper = new WzDumper(maplestoryDirectory);
+            InitializeWzFiles(maplestoryDirectory);
+            _instance = dumper;
         }
 
-        public static void Uninitialize(string maplestoryDirectory)
+        public static void Uninitialize()
         {
             if (_instance == null)
             {
@@ -45,7 +47,6 @@ namespace WzDumper
         private WzDumper(string maplestoryDirectory)
         {
             WzFileManager.Initialize(maplestoryDirectory);
-            InitializeWzFiles();
         }
 
         ~WzDumper()
@@ -53,7 +54,7 @@ namespace WzDumper
             WzFileManager.Uninitialize();
         }
 
-        private void InitializeWzFiles()
+        private static void InitializeWzFiles(string maplestoryDirectory)
         {
             if (WzFileManager.Instance.HasDataFile) //currently always false
             {

@@ -12,7 +12,7 @@ namespace WzDumper.Map
 {
     public static class MapDataPreview
     {
-        public static void ShowMapPreview(this WzData.MapData mapData, bool procedural = false)
+        public static void ShowMapPreview(this WzData.MapData mapData, WzData.Assets assets, bool procedural = false)
         {
             var bitmap = new Bitmap(mapData.mapSize.width, mapData.mapSize.height);
             var graphics = Graphics.FromImage(bitmap);
@@ -30,7 +30,7 @@ namespace WzDumper.Map
                 form.Controls.Add(pictureBox);
 
                 // Background[Back]
-                form.Shown += (object sender, EventArgs e) => { RenderTiles(mapData, graphics, pictureBox, procedural); };
+                form.Shown += (object sender, EventArgs e) => { RenderTiles(mapData, assets, graphics, pictureBox, procedural); };
                 // Portals
                 // Reactors
                 // Life (NPC + Mobs)
@@ -44,14 +44,14 @@ namespace WzDumper.Map
             }
         }
 
-        private static void RenderTiles(WzData.MapData mapData, Graphics graphics, PictureBox pictureBox, bool procedural)
+        private static void RenderTiles(WzData.MapData mapData, WzData.Assets assets, Graphics graphics, PictureBox pictureBox, bool procedural)
         {
             foreach (var layer in mapData.layers)
             {
                 foreach (var tile in layer.tiles)
                 {
                     var frame = tile.frames[0];
-                    graphics.DrawImage(mapData.assets.bitmaps[frame.bitmapPath], frame.position.x, frame.position.y);
+                    graphics.DrawImage(assets.bitmaps[frame.bitmapPath], frame.position.x, frame.position.y);
                     if (procedural)
                     {
                         pictureBox.Refresh();

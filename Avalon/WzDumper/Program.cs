@@ -13,29 +13,34 @@ using Swan.Cryptography;
 using System.Net;
 using WzDumper.Map;
 using Swan.Logging;
+using System.IO;
+using System.Threading;
 
 namespace WzDumper
 {
     internal class Program
     {
+        public static ManualResetEvent ShutdownEvent = new ManualResetEvent(false);
+
         static void Main(string[] args)
         {
-            string url = "http://localhost:6969/";
-            using (var server = CreateWebServer(url))
+            if (args.Length == 0)
             {
-                // Once we've registered our modules and configured them, we call the RunAsync() method.
-                server.RunAsync();
-
-                var browser = new System.Diagnostics.Process() {
-                    StartInfo = new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true }
-                };
-                browser.Start();
-                // Wait for any key to be pressed before disposing of our web server.
-                // In a service, we'd manage the lifecycle of our web server using
-                // something like a BackgroundWorker or a ManualResetEvent.
-                Console.ReadKey(true);
+                Console.WriteLine($"Usage: {Environment.GetCommandLineArgs()[0]} port");
             }
 
+            string url = $"http://localhost:{int.Parse(args[0])}/";
+            using (var server = CreateWebServer(url))
+            {
+                server.RunAsync();
+                ShutdownEvent.WaitOne();
+            }
+        }
+
+        static async Task Shutdown(IHttpContext ctx)
+        {
+            await ctx.SendDataAsync(new { status = HttpStatusCode.OK, message = (string)null });
+            ShutdownEvent.Set();
         }
 
         // Create and configure our web server.
@@ -46,10 +51,12 @@ namespace WzDumper
                     .WithMode(HttpListenerMode.EmbedIO))
                 // First, we will configure our web server by adding Modules.
                 .WithLocalSessionManager()
-                .HandleHttpException((ctx, ex) => ctx.SendDataAsync(new { status = ex.StatusCode, message = ex.Message }))
+                .HandleUnhandledException(ExceptionHandler.DataResponseForException)
+                .HandleHttpException(ExceptionHandler.DataResponseForHttpException)
                 .WithWebApi("/api", m =>
                     m.WithController<WzDumperController>()
-                    .WithController<MapDumperController>())
+                    .WithController<MapController>())
+                .WithModule(new ActionModule("/shutdown", HttpVerbs.Any, Shutdown))
                 .WithModule(new ActionModule("/", HttpVerbs.Any, ctx => throw new HttpException(HttpStatusCode.NotFound, ctx.RequestedPath)));
 
             // Listen for state changes.
@@ -57,21 +64,30 @@ namespace WzDumper
 
             return server;
         }
-    }
 
-    public class WzDumperController : WebApiController
-    {
-        [Route(HttpVerbs.Get, "/init")]
-        public Task Initialize([QueryData, FormData] NameValueCollection parameters)
+        internal static class ExceptionHandler
         {
-            var maplestoryDirectory = parameters["maplestoryDirectory"];
-            if (maplestoryDirectory == null)
+            private static Dictionary<Type, HttpStatusCode> EXCEPTION_STATUS_CODE_MAPPING = new Dictionary<Type, HttpStatusCode>(){
+                [typeof(InvalidOperationException)] = HttpStatusCode.BadRequest,
+                [typeof(DirectoryNotFoundException)] = HttpStatusCode.NotFound,
+                [typeof(KeyNotFoundException)] = HttpStatusCode.NotFound,
+            };
+
+            public static Task DataResponseForException(IHttpContext context, Exception exception)
             {
-                throw new HttpException(HttpStatusCode.BadRequest, "missing parameter: maplestoryDirectory");
+                if (EXCEPTION_STATUS_CODE_MAPPING.TryGetValue(exception.GetType(), out HttpStatusCode status))
+                {
+                    context.Response.StatusCode = (int)status;
+                    throw new HttpException(status, exception.Message);
+                }
+
+                throw new HttpException(HttpStatusCode.InternalServerError, exception.Message);
             }
 
-            WzDumper.Initialize(maplestoryDirectory);
-            return Task.CompletedTask;
+            public static Task DataResponseForHttpException(IHttpContext context, IHttpException httpException)
+            {
+                return ResponseSerializer.Json(context, new { status = httpException.StatusCode, message = httpException.Message });
+            }
         }
     }
 }

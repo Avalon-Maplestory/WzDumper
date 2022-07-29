@@ -11,6 +11,7 @@ using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,11 +21,32 @@ namespace WzDumper.Map
 {
     public static class MapDumper
     {
-        public static List<WzData.AvailableMap> GetAvailableMaps(this WzDumper _)
+        public static List<WzData.AvailableMap> GetAvailableMaps(this WzDumper _, bool verifyExists = false, int count = -1, int offset = 0)
         {
             var maps = new List<WzData.AvailableMap>();
             foreach (var (mapId, mapStreetName, mapName) in WzFileManager.Instance.InfoManager.Maps.Select(map => (map.Key, map.Value.Item1, map.Value.Item2)))
             {
+                if (offset != 0)
+                {
+                    --offset;
+                    continue;
+                }
+
+                if (maps.Count == count)
+                    break;
+
+                if (verifyExists)
+                {
+                    try
+                    {
+                        GetMapImage(int.Parse(mapId));
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+                
                 maps.Add(new WzData.AvailableMap() {
                     mapId = int.Parse(mapId),
                     mapName = $"{mapStreetName} : {mapName}"
@@ -33,21 +55,27 @@ namespace WzDumper.Map
             return maps.OrderBy(map => map.mapId).ToList();
         }
 
-        public static WzData.MapData DumpMap(this WzDumper _, int mapId)
+        public static (WzData.MapData, WzData.Assets) DumpMap(this WzDumper _, int mapId)
         {
-            var mapData = new WzData.MapData();
+            var (mapData, assets) = (new WzData.MapData(), new WzData.Assets());
 
+            Exception mapException = null;
             var thread = new Thread(() =>
             {
+                WzImage mapImage;
+                try
+                { 
+                    mapImage = GetMapImage(mapId);
+                    if (!mapImage.Parsed)
+                        mapImage.ParseImage();
+                }
+                catch (Exception ex)
+                {
+                    mapException = ex;
+                    return;
+                }
+
                 var mapIdStr = $"{mapId}".PadLeft(9, '0');
-                var mapWzFileName = $"Map{mapIdStr[0]}";
-
-                var wzDirectory = WzFileManager.Instance.FindMapWz(mapWzFileName);
-                var mapImage = (WzImage)wzDirectory[$"{mapIdStr}.img"];
-
-                if (!mapImage.Parsed)
-                    mapImage.ParseImage();
-
                 var mapStringProp = WzInfoTools.GetMapStringProp(mapIdStr);
                 var mapName = WzInfoTools.GetMapName(mapStringProp);
                 var mapStreetName = WzInfoTools.GetMapStreetName(mapStringProp);
@@ -108,16 +136,36 @@ namespace WzDumper.Map
                 mapBoard.BoardItems.Sort();
 
                 var mapSimulator = new MapSimulator(mapBoard, $"MapDumper: {mapIdStr}");
-                mapSimulator.Load();
+                mapSimulator.Load(true);
 
-                mapData = mapSimulator.DumpMap();
+                (mapData, assets) = mapSimulator.DumpMap();
             });
 
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             thread.Join();
 
-            return mapData;
+            if (mapException != null)
+            {
+                throw mapException;
+            }
+
+            return (mapData, assets);
+        }
+
+        private static WzImage GetMapImage(int mapId)
+        {
+            var mapIdStr = $"{mapId}".PadLeft(9, '0');
+            var mapWzFileName = $"Map{mapIdStr[0]}";
+            var wzDirectory = WzFileManager.Instance.FindMapWz(mapWzFileName);
+            var mapImage = (WzImage)wzDirectory[$"{mapIdStr}.img"];
+            
+            if (mapImage == null)
+            {
+                throw new KeyNotFoundException($"map {mapId} does not exist");
+            }
+
+            return mapImage;
         }
     }
 }
