@@ -93,6 +93,7 @@ namespace HaCreator.Wz
             }
 
             _instance = null;
+            GC.Collect();
         }
 
         private WzFileManager(string directory, WzMapleVersion version)

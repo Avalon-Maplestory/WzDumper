@@ -42,6 +42,7 @@ namespace WzDumper
             }
 
             _instance = null;
+            GC.Collect();
         }
 
         private WzDumper(string maplestoryDirectory)

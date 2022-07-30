@@ -38,6 +38,7 @@ namespace WzDumper.WzData
     public struct AvailableMap
     {
         public int mapId;
+        public string mapStreetName;
         public string mapName;
     }
 }

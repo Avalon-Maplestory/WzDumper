@@ -10,19 +10,25 @@ namespace WzDumper
     public class WzDumperController : WebApiController
     {
         [Route(HttpVerbs.Get, "/initialize")]
-        public Task Initialize([QueryData, FormData] NameValueCollection parameters)
+        public object Initialize([QueryData, FormData] NameValueCollection parameters)
         {
             var maplestoryDirectory = parameters.GetParameter("maplestoryDirectory");
 
             WzDumper.Initialize(maplestoryDirectory);
-            throw new HttpException(HttpStatusCode.OK);
+            return new {
+                status = HttpStatusCode.OK,
+                data = new { }
+            };
         }
 
         [Route(HttpVerbs.Get, "/uninitialize")]
-        public Task Initialize()
+        public object Uninitialize()
         {
             WzDumper.Uninitialize();
-            throw new HttpException(HttpStatusCode.OK);
+            return new {
+                status = HttpStatusCode.OK,
+                data = new { }
+            };
         }
     }
 }

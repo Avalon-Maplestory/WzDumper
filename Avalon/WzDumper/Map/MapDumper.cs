@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using static HaCreator.MapSimulator.MapSimulator;
@@ -21,20 +22,23 @@ namespace WzDumper.Map
 {
     public static class MapDumper
     {
-        public static List<WzData.AvailableMap> GetAvailableMaps(this WzDumper _, bool verifyExists = false, int count = -1, int offset = 0)
+        public static List<WzData.AvailableMap> GetAvailableMaps(this WzDumper _, string query, bool verifyExists = false, int count = -1, int offset = 0)
         {
             var maps = new List<WzData.AvailableMap>();
             foreach (var (mapId, mapStreetName, mapName) in WzFileManager.Instance.InfoManager.Maps.Select(map => (map.Key, map.Value.Item1, map.Value.Item2)))
             {
-                if (offset != 0)
+                string mapIdStr = $"{mapId}".PadLeft(9, '0');
+                if (!Regex.IsMatch(mapIdStr, query)
+                    && !Regex.IsMatch($"{mapId}", query)
+                    && !Regex.IsMatch(mapName, query)
+                    && !Regex.IsMatch(mapStreetName, query)
+                    && !Regex.IsMatch($"{mapStreetName} : {mapName}", query)
+                    && !Regex.IsMatch($"{mapId} - {mapStreetName} : {mapName}", query)
+                    && !Regex.IsMatch($"{mapIdStr} - {mapStreetName} : {mapName}", query))
                 {
-                    --offset;
                     continue;
                 }
-
-                if (maps.Count == count)
-                    break;
-
+                
                 if (verifyExists)
                 {
                     try
@@ -46,10 +50,20 @@ namespace WzDumper.Map
                         continue;
                     }
                 }
+
+                if (offset != 0)
+                {
+                    --offset;
+                    continue;
+                }
+
+                if (maps.Count == count)
+                    break;
                 
                 maps.Add(new WzData.AvailableMap() {
                     mapId = int.Parse(mapId),
-                    mapName = $"{mapStreetName} : {mapName}"
+                    mapStreetName = mapStreetName,
+                    mapName = mapName
                 });
             }
             return maps.OrderBy(map => map.mapId).ToList();

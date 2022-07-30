@@ -34,13 +34,14 @@ namespace WzDumper
             {
                 server.RunAsync();
                 ShutdownEvent.WaitOne();
+                Thread.Sleep(1000); // Give time for everything to clean up
             }
         }
 
-        static async Task Shutdown(IHttpContext ctx)
+        static Task Shutdown(IHttpContext context)
         {
-            await ctx.SendDataAsync(new { status = HttpStatusCode.OK, message = (string)null });
             ShutdownEvent.Set();
+            return ResponseSerializer.Json(context, new { status = HttpStatusCode.OK, data = new { } });
         }
 
         // Create and configure our web server.
