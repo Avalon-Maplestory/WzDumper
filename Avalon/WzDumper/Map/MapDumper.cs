@@ -28,13 +28,13 @@ namespace WzDumper.Map
             foreach (var (mapId, mapStreetName, mapName) in WzFileManager.Instance.InfoManager.Maps.Select(map => (map.Key, map.Value.Item1, map.Value.Item2)))
             {
                 string mapIdStr = $"{mapId}".PadLeft(9, '0');
-                if (!Regex.IsMatch(mapIdStr, query)
-                    && !Regex.IsMatch($"{mapId}", query)
-                    && !Regex.IsMatch(mapName, query)
-                    && !Regex.IsMatch(mapStreetName, query)
-                    && !Regex.IsMatch($"{mapStreetName} : {mapName}", query)
-                    && !Regex.IsMatch($"{mapId} - {mapStreetName} : {mapName}", query)
-                    && !Regex.IsMatch($"{mapIdStr} - {mapStreetName} : {mapName}", query))
+                if (!Regex.IsMatch(mapIdStr, query, RegexOptions.IgnoreCase)
+                    && !Regex.IsMatch($"{mapId}", query, RegexOptions.IgnoreCase)
+                    && !Regex.IsMatch(mapName, query, RegexOptions.IgnoreCase)
+                    && !Regex.IsMatch(mapStreetName, query, RegexOptions.IgnoreCase)
+                    && !Regex.IsMatch($"{mapStreetName} : {mapName}", query, RegexOptions.IgnoreCase)
+                    && !Regex.IsMatch($"{mapId} - {mapStreetName} : {mapName}", query, RegexOptions.IgnoreCase)
+                    && !Regex.IsMatch($"{mapIdStr} - {mapStreetName} : {mapName}", query, RegexOptions.IgnoreCase))
                 {
                     continue;
                 }
