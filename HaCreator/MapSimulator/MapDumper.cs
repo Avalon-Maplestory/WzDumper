@@ -74,7 +74,7 @@ namespace HaCreator.MapSimulator
 
                         if (frame.Source is WzCanvasProperty canvas)
                         {
-                            frameData.bitmapPath = canvas.FullPath;
+                            frameData.bitmapPath = canvas.FullPath.Replace('.', '_');
 
                             if (!assets.bitmaps.ContainsKey(frameData.bitmapPath))
                             {

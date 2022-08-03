@@ -18,6 +18,8 @@ namespace HaSharedLibrary
 {
     public class WzMp3Streamer
     {
+        public bool Playing { get; set; } = false;
+
         private readonly Stream byteStream;
 
         private Mp3FileReader mpegStream;
@@ -73,6 +75,7 @@ namespace HaSharedLibrary
 
                 wavePlayer.Pause();
                 wavePlayer.Play();
+                Playing = true;
             }
         }
 
@@ -88,6 +91,8 @@ namespace HaSharedLibrary
 
             disposed = true;
             wavePlayer.Dispose();
+            Playing = false;
+
             if (mpegStream != null)
             {
                 mpegStream.Dispose();
@@ -107,6 +112,7 @@ namespace HaSharedLibrary
                 return;
 
             wavePlayer.Play();
+            Playing = true;
         }
 
         public void Pause()
@@ -115,12 +121,16 @@ namespace HaSharedLibrary
                 return;
 
             wavePlayer.Pause();
+            Playing = false;
         }
 
         public void Stop()
         {
-            if (!playbackSuccessfully) return;
+            if (!playbackSuccessfully)
+                return;
+
             wavePlayer.Stop();
+            Playing = false;
         }
 
         public bool Repeat

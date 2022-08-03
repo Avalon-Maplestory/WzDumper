@@ -231,10 +231,10 @@ namespace HaCreator.MapSimulator
             this.matrixScale = Matrix.CreateScale(RenderObjectScaling);
         }
 
-        public void Load(bool is_dump = false)
+        public void Load()
         {
             Initialize();
-            LoadContent(is_dump);
+            LoadContent();
         }
 
         protected override void Initialize()
@@ -266,11 +266,6 @@ namespace HaCreator.MapSimulator
         /// </summary>
         protected override void LoadContent()
         {
-            LoadContent(false);
-        }
-
-        private void LoadContent(bool is_dump)
-        {
             WzDirectory MapWzFile = WzFileManager.Instance["map"]; // Map.wz
             WzDirectory UIWZFile = WzFileManager.Instance["ui"];
             WzDirectory SoundWZFile = WzFileManager.Instance["sound"];
@@ -284,11 +279,6 @@ namespace HaCreator.MapSimulator
                 if (WzFileManager.Instance.InfoManager.BGMs.ContainsKey(mapBoard.MapInfo.bgm))
                 {
                     audio = new WzMp3Streamer(WzFileManager.Instance.InfoManager.BGMs[mapBoard.MapInfo.bgm], true);
-                    if (!is_dump && audio != null)
-                    {
-                        audio.Volume = 0.3f;
-                        audio.Play();
-                    }
                 }
             }
 
@@ -568,6 +558,12 @@ namespace HaCreator.MapSimulator
         /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
         {
+            if (audio != null && audio.Playing)
+            {
+                audio.Volume = 0.3f;
+                audio.Play();
+            }
+
             float frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
             currTickCount = Environment.TickCount;
             float delta = gameTime.ElapsedGameTime.Milliseconds / 1000f;

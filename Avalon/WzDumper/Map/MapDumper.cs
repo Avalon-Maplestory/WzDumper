@@ -107,7 +107,6 @@ namespace WzDumper.Map
                     mapInfo.id = int.Parse(WzInfoTools.RemoveLeadingZeros(WzInfoTools.RemoveExtension(mapImage.Name)));
                 mapInfo.mapType = type;
 
-
                 Rectangle mapVR = new Rectangle();
                 Point mapCenter = new Point();
                 Point mapSize = new Point();
@@ -150,7 +149,7 @@ namespace WzDumper.Map
                 mapBoard.BoardItems.Sort();
 
                 var mapSimulator = new MapSimulator(mapBoard, $"MapDumper: {mapIdStr}");
-                mapSimulator.Load(true);
+                mapSimulator.Load();
 
                 (mapData, assets) = mapSimulator.DumpMap();
             });
