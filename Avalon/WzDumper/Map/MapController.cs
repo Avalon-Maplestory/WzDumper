@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Net;
 using SharpDX;
+using WzDumper.WzData;
 
 namespace WzDumper.Map
 {
@@ -23,7 +24,9 @@ namespace WzDumper.Map
             var count = parameters.GetParameter("count", "-1");
             var offset = parameters.GetParameter("offset", "0");
 
-            IEnumerable<WzData.AvailableMap> availableMaps = WzDumper.Instance.GetAvailableMaps(query, bool.Parse(verifyExists), int.Parse(count), int.Parse(offset));
+            var availableMaps = new WzData.AvailableMaps() {
+                maps = WzDumper.Instance.GetAvailableMaps(query, bool.Parse(verifyExists), int.Parse(count), int.Parse(offset))
+            };
 
             return new {
                 status = HttpStatusCode.OK,

@@ -16,7 +16,7 @@ namespace WzDumper
             var value = parameters[parameter];
             if (value == null)
             {
-                throw new InvalidOperationException("missing parameter: mapId");
+                throw new InvalidOperationException($"missing parameter: {parameter}");
             }
             return value;
         }
@@ -28,7 +28,7 @@ namespace WzDumper
             {
                 if (default_value == null)
                 {
-                    throw new InvalidOperationException("missing parameter: mapId");
+                    throw new InvalidOperationException($"missing parameter: {parameter}");
                 }
                 return default_value;
             }
