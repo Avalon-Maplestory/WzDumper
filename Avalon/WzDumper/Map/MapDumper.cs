@@ -22,9 +22,9 @@ namespace WzDumper.Map
 {
     public static class MapDumper
     {
-        public static List<WzData.AvailableMap> GetAvailableMaps(this WzDumper _, string query, bool verifyExists = false, int count = -1, int offset = 0)
+        public static List<WzData.Map.AvailableMap> GetAvailableMaps(this WzDumper _, string query, bool verifyExists = false, int count = -1, int offset = 0)
         {
-            var maps = new List<WzData.AvailableMap>();
+            var maps = new List<WzData.Map.AvailableMap>();
             foreach (var (mapId, mapStreetName, mapName) in WzFileManager.Instance.InfoManager.Maps.Select(map => (map.Key, map.Value.Item1, map.Value.Item2)))
             {
                 string mapIdStr = $"{mapId}".PadLeft(9, '0');
@@ -60,7 +60,7 @@ namespace WzDumper.Map
                 if (maps.Count == count)
                     break;
                 
-                maps.Add(new WzData.AvailableMap() {
+                maps.Add(new WzData.Map.AvailableMap() {
                     mapId = int.Parse(mapId),
                     mapStreetName = mapStreetName,
                     mapName = mapName
@@ -69,9 +69,10 @@ namespace WzDumper.Map
             return maps.OrderBy(map => map.mapId).ToList();
         }
 
-        public static (WzData.MapData, WzData.Assets) DumpMap(this WzDumper _, int mapId)
+        public static (WzData.Map.MapData?, Dictionary<string, System.Drawing.Bitmap>) DumpMap(this WzDumper _, int mapId)
         {
-            var (mapData, assets) = (new WzData.MapData(), new WzData.Assets());
+            WzData.Map.MapData? mapData = null;
+            Dictionary<string, System.Drawing.Bitmap> bitmaps = null;
 
             Exception mapException = null;
             var thread = new Thread(() =>
@@ -119,7 +120,6 @@ namespace WzDumper.Map
 
                 var multiBoard = new MultiBoard();
                 var mapBoard = multiBoard.CreateBoard(mapSize, mapCenter, null);
-                //Board mapBoard = new Board(size, center, multiBoard, null, ItemTypes.All, ItemTypes.All);
 
                 if (mapHasMinimap)
                 {
@@ -151,7 +151,7 @@ namespace WzDumper.Map
                 var mapSimulator = new MapSimulator(mapBoard, $"MapDumper: {mapIdStr}");
                 mapSimulator.Load();
 
-                (mapData, assets) = mapSimulator.DumpMap();
+                (mapData, bitmaps) = mapSimulator.DumpMap();
             });
 
             thread.SetApartmentState(ApartmentState.STA);
@@ -163,7 +163,7 @@ namespace WzDumper.Map
                 throw mapException;
             }
 
-            return (mapData, assets);
+            return (mapData, bitmaps);
         }
 
         private static WzImage GetMapImage(int mapId)

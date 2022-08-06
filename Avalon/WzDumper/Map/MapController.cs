@@ -24,7 +24,7 @@ namespace WzDumper.Map
             var count = parameters.GetParameter("count", "-1");
             var offset = parameters.GetParameter("offset", "0");
 
-            var availableMaps = new WzData.AvailableMaps() {
+            var availableMaps = new WzData.Map.AvailableMaps() {
                 maps = WzDumper.Instance.GetAvailableMaps(query, bool.Parse(verifyExists), int.Parse(count), int.Parse(offset))
             };
 
@@ -40,8 +40,8 @@ namespace WzDumper.Map
             var mapId = parameters.GetParameter("mapId");
             var assetsDirectory = parameters.GetParameter("assetsDirectory");
             
-            var (mapData, assets) = WzDumper.Instance.DumpMap(int.Parse(mapId));
-            assets.SaveTo(assetsDirectory);
+            var (mapData, bitmaps) = WzDumper.Instance.DumpMap(int.Parse(mapId));
+            MapDataSaver.SaveBitmaps(bitmaps, assetsDirectory);
 
             return new {
                 status = HttpStatusCode.OK,

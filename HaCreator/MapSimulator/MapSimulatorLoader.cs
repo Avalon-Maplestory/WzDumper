@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using SharpDX.Direct2D1.Effects;
 
 namespace HaCreator.MapSimulator
 {
@@ -57,6 +58,160 @@ namespace HaCreator.MapSimulator
         }
 
         #region Common
+        private static WzSpineObject GetSpriteObject(WzImageProperty source, string spineAniPath = null)
+        {
+            WzImageProperty spineAtlas = null;
+
+            bool bIsObjectLayer = source.Parent.Name == "spine";
+            if (bIsObjectLayer) // load spine if the source is already the directory we need
+            {
+                string spineAtlasPath = ((WzStringProperty)source["spine"])?.GetString();
+                if (spineAtlasPath != null)
+                {
+                    spineAtlas = source[spineAtlasPath + ".atlas"];
+                }
+            }
+            else if (spineAniPath != null)
+            {
+                WzImageProperty spineSource = (WzImageProperty)source.Parent?.Parent["spine"]?[source.Name];
+
+                string spineAtlasPath = ((WzStringProperty)spineSource["spine"])?.GetString();
+                if (spineAtlasPath != null)
+                {
+                    spineAtlas = spineSource[spineAtlasPath + ".atlas"];
+                }
+            }
+            else // simply check if 'spine' WzStringProperty exist, fix for Adele town
+            {
+                string spineAtlasPath = ((WzStringProperty)source["spine"])?.GetString();
+                if (spineAtlasPath != null)
+                {
+                    spineAtlas = source[spineAtlasPath + ".atlas"];
+                    bIsObjectLayer = true;
+                }
+            }
+
+            if (spineAtlas is WzStringProperty stringObj && stringObj.IsSpineAtlasResources)
+            {
+                return new WzSpineObject(new WzSpineAnimationItem(stringObj));
+            }
+
+            return null;
+        }
+
+        private static (WzDumper.WzData.Assets.BitmapFrame, System.Drawing.Bitmap) LoadBitmapFrame(WzCanvasProperty property)
+        {
+            var origin = property.GetCanvasOriginPosition();
+
+            return (
+                new WzDumper.WzData.Assets.BitmapFrame() {
+                    bitmapPath = property.FullPath.Replace(".", "_"),
+                    offset = new WzDumper.WzData.Point() {
+                        x = (int)origin.X,
+                        y = (int)origin.Y
+                    }
+                },
+                property.GetLinkedWzCanvasBitmap()
+            );
+        }
+
+        public static (WzDumper.WzData.Assets.Sprite, Dictionary<string, System.Drawing.Bitmap>) LoadSprite(WzImageProperty source, string spineAni = null)
+        {
+            var sprite = new WzDumper.WzData.Assets.Sprite() {
+                path = source.FullPath,
+                spriteType = WzDumper.WzData.Assets.SpriteType.Unknown
+            };
+            var bitmaps = new Dictionary<string, System.Drawing.Bitmap>();
+
+            if (source is WzSubProperty property1 && property1.WzProperties.Count == 1)
+            {
+                source = property1.WzProperties[0];
+            }
+
+            if (source is WzCanvasProperty property) //one-frame
+            {
+                var spineObject = GetSpriteObject(source, spineAni);
+                if (spineObject != null)
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    var (frame, bitmap) = LoadBitmapFrame(property);
+
+                    sprite.spriteType = WzDumper.WzData.Assets.SpriteType.Bitmap;
+                    sprite.spriteData = new WzDumper.WzData.Assets.BitmapSprite() {
+                        frames = new List<WzDumper.WzData.Assets.BitmapFrame>() { frame }
+                    };
+                    bitmaps[frame.bitmapPath] = bitmap;
+                }
+            }
+            else if (source is WzSubProperty) // animated
+            {
+                WzImageProperty _frameProp;
+                int i = 0;
+
+                while ((_frameProp = WzInfoTools.GetRealProperty(source[(i++).ToString()])) != null)
+                {
+                    if (_frameProp is WzSubProperty) // issue with 867119250
+                    {
+                        return LoadSprite(_frameProp);
+                    }
+                    else
+                    {
+                        WzCanvasProperty frameProp;
+
+                        if (_frameProp is WzUOLProperty) // some could be UOL. Ex: 321100000 Mirror world: [Mirror World] Leafre
+                        {
+                            WzObject linkVal = ((WzUOLProperty)_frameProp).LinkValue;
+                            if (linkVal is WzCanvasProperty linkCanvas)
+                            {
+                                frameProp = linkCanvas;
+                            }
+                            else
+                                continue;
+                        }
+                        else
+                        {
+                            frameProp = (WzCanvasProperty)_frameProp;
+                        }
+
+                        int delay = (int)InfoTool.GetOptionalInt(frameProp["delay"], 100);
+
+                        var spineObject = GetSpriteObject((WzImageProperty)frameProp.Parent, spineAni);
+                        if (spineObject != null)
+                        {
+                            throw new NotImplementedException();
+                        }
+                        else
+                        {
+                            if (sprite.spriteData == null)
+                            {
+                                sprite.spriteType = WzDumper.WzData.Assets.SpriteType.Bitmap;
+                                sprite.spriteData = new WzDumper.WzData.Assets.BitmapSprite() {
+                                    frames = new List<WzDumper.WzData.Assets.BitmapFrame>(),
+                                    fps = 1000 / delay,
+                                };
+                            }
+
+                            if (sprite.spriteType != WzDumper.WzData.Assets.SpriteType.Bitmap)
+                            {
+                                throw new Exception("Animated sprite frame's type doesn't match sprite's type");
+                            }
+
+                            var spriteData = (WzDumper.WzData.Assets.BitmapSprite)sprite.spriteData;
+
+                            var (frame, bitmap) = LoadBitmapFrame(frameProp);
+                            spriteData.frames.Add(frame);
+                            bitmaps[frame.bitmapPath] = bitmap;
+                        }
+                    }
+                }
+            }
+
+            return (sprite, bitmaps);
+        }
+
         /// <summary>
         /// Load frames from WzSubProperty or WzCanvasProperty
         /// </summary>
@@ -106,7 +261,6 @@ namespace HaCreator.MapSimulator
                     System.Drawing.PointF origin = property.GetCanvasOriginPosition();
 
                     var dxObject = new DXSpineObject(spineObject, x, y, origin);
-                    dxObject.Source = spineObject;
                     frames.Add(dxObject);
                 }
                 else if (source.MSTag != null)
@@ -115,7 +269,6 @@ namespace HaCreator.MapSimulator
                     System.Drawing.PointF origin = property.GetCanvasOriginPosition();
 
                     var dxObject = new DXObject(x - (int)origin.X, y - (int)origin.Y, texture, 0);
-                    dxObject.Source = property;
                     frames.Add(dxObject);
                 }
                 else // fallback
@@ -185,7 +338,6 @@ namespace HaCreator.MapSimulator
                             System.Drawing.PointF origin = frameProp.GetCanvasOriginPosition();
 
                             var dxObject = new DXSpineObject(spineObject, x, y, origin, delay);
-                            dxObject.Source = spineObject;
                             frames.Add(dxObject);
                         }
                         else if (frameProp.MSTag != null)
@@ -194,7 +346,6 @@ namespace HaCreator.MapSimulator
                             System.Drawing.PointF origin = frameProp.GetCanvasOriginPosition();
 
                             var dxObject = new DXObject(x - (int)origin.X, y - (int)origin.Y, texture, delay);
-                            dxObject.Source = frameProp.GetLinkedWzImageProperty();
                             frames.Add(dxObject);
                         }
                         else
@@ -228,6 +379,7 @@ namespace HaCreator.MapSimulator
         {
             BaseDXDrawableItem mapItem = new BaseDXDrawableItem(LoadFrames(texturePool, source, x, y, device, ref usedProps), flip);
             mapItem.source = source;
+            mapItem.Position = new Point(x, y);
             return mapItem;
         }
 

@@ -27,6 +27,7 @@ namespace WzDumper
             if (args.Length == 0)
             {
                 Console.WriteLine($"Usage: {Environment.GetCommandLineArgs()[0]} port");
+                return;
             }
 
             string url = $"http://localhost:{int.Parse(args[0])}/";

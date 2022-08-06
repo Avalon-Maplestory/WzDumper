@@ -1,6 +1,7 @@
 ﻿using HaCreator.MapSimulator.Objects.FieldObject;
 using HaSharedLibrary.Render.DX;
 using HaSharedLibrary.Util;
+using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,89 +12,70 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
 
 namespace HaCreator.MapSimulator
 {
     public partial class MapSimulator
     {
-        public (WzDumper.WzData.MapData, WzDumper.WzData.Assets) DumpMap()
+        public (WzDumper.WzData.Map.MapData, Dictionary<string, System.Drawing.Bitmap>) DumpMap()
         {
-            var mapData = new WzDumper.WzData.MapData() {
+            var mapData = new WzDumper.WzData.Map.MapData() {
                 mapSize = new WzDumper.WzData.Size() {
                     width = vr_fieldBoundary.Width - vr_fieldBoundary.X,
                     height = vr_fieldBoundary.Height - vr_fieldBoundary.Y
                 }
             };
 
-            var assets = new WzDumper.WzData.Assets() {
-                bitmaps = new Dictionary<string, Bitmap>()
-            };
+            var bitmaps = new Dictionary<string, Bitmap>();
 
             Console.WriteLine($"Map size: {{{mapData.mapSize.width} {mapData.mapSize.height}}}");
             Console.WriteLine($"Dumping tiles...");
-            DumpTiles(ref mapData, ref assets);
+            DumpTiles(ref mapData, ref bitmaps);
 
-            return (mapData, assets);
+            return (mapData, bitmaps);
         }
 
-        private void DumpTiles(ref WzDumper.WzData.MapData mapData, ref WzDumper.WzData.Assets assets)
+        private void DumpTiles(ref WzDumper.WzData.Map.MapData mapData, ref Dictionary<string, Bitmap> bitmaps)
         {
-            var layers = new List<WzDumper.WzData.Layer>();
+            var layers = new List<WzDumper.WzData.Map.Layer>();
             foreach (var (layer, layer_index) in mapObjects.Select((value, index) => (value, index)))
             {
                 Console.Write($"  Dumping layer {layer_index}... ");
 
-                var layerData = new WzDumper.WzData.Layer() {
-                    tiles = new List<WzDumper.WzData.Tile>()
+                var layerData = new WzDumper.WzData.Map.Layer() {
+                    tiles = new List<WzDumper.WzData.Map.Tile>()
                 };
 
-                foreach (var obj in layer)
+                foreach (var tile in layer)
                 {
-                    var frames = new List<WzDumper.WzData.Frame>();
-                    if (obj.frames.Count == 0)
+                    if (tile.source is WzImageProperty image)
                     {
-                        throw new NotImplementedException();
-                    }
-                    foreach (var frame in obj.frames)
-                    {
-                        int width = frame.Width;
-                        int height = frame.Height;
+                        var (sprite, tileBitmaps) = MapSimulatorLoader.LoadSprite(image);
 
                         int centerX = mapBoard.CenterPoint.X;
                         int centerY = mapBoard.CenterPoint.Y;
-                        int x = centerX + frame.X - vr_fieldBoundary.X;
-                        int y = centerY + frame.Y - vr_fieldBoundary.Y;
+                        int x = centerX + tile.Position.X - vr_fieldBoundary.X;
+                        int y = centerY + tile.Position.Y - vr_fieldBoundary.Y;
 
-                        var frameData = new WzDumper.WzData.Frame() {
-                            durationMs = (frame.Delay * 1000) / 60, // convert to milliseconds, devide by 60 fps
+                        var tileData = new WzDumper.WzData.Map.Tile() {
                             position = new WzDumper.WzData.Point() {
                                 x = x,
                                 y = y
-                            }
+                            },
+                            sprite = sprite
                         };
 
-                        if (frame.Source is WzCanvasProperty canvas)
+                        layerData.tiles.Add(tileData);
+                        foreach (var (path, bitmap) in tileBitmaps.Select(pair => (pair.Key, pair.Value)))
                         {
-                            frameData.bitmapPath = canvas.FullPath.Replace('.', '_');
-
-                            if (!assets.bitmaps.ContainsKey(frameData.bitmapPath))
-                            {
-                                assets.bitmaps[frameData.bitmapPath] = canvas.GetLinkedWzCanvasBitmap();
-                            }
+                            bitmaps[path] = bitmap;
                         }
-                        else
-                        {
-                            throw new NotImplementedException();
-                        }
-
-                        frames.Add(frameData);
                     }
-
-                    var tileData = new WzDumper.WzData.Tile() {
-                        frames = frames
-                    };
-
-                    layerData.tiles.Add(tileData);
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
 
                 layers.Add(layerData);

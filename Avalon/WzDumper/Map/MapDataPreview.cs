@@ -12,7 +12,7 @@ namespace WzDumper.Map
 {
     public static class MapDataPreview
     {
-        public static void ShowMapPreview(this WzData.MapData mapData, WzData.Assets assets, bool procedural = false)
+        public static void ShowMapPreview(this WzData.Map.MapData mapData, Dictionary<string, System.Drawing.Bitmap> bitmaps, bool procedural = false)
         {
             var bitmap = new Bitmap(mapData.mapSize.width, mapData.mapSize.height);
             var graphics = Graphics.FromImage(bitmap);
@@ -30,7 +30,7 @@ namespace WzDumper.Map
                 form.Controls.Add(pictureBox);
 
                 // Background[Back]
-                form.Shown += (object sender, EventArgs e) => { RenderTiles(mapData, assets, graphics, pictureBox, procedural); };
+                form.Shown += (object sender, EventArgs e) => { RenderTiles(mapData, bitmaps, graphics, pictureBox, procedural); };
                 // Portals
                 // Reactors
                 // Life (NPC + Mobs)
@@ -44,19 +44,30 @@ namespace WzDumper.Map
             }
         }
 
-        private static void RenderTiles(WzData.MapData mapData, WzData.Assets assets, Graphics graphics, PictureBox pictureBox, bool procedural)
+        private static void RenderTiles(WzData.Map.MapData mapData, Dictionary<string, System.Drawing.Bitmap> bitmaps, Graphics graphics, PictureBox pictureBox, bool procedural)
         {
             foreach (var layer in mapData.layers)
             {
                 foreach (var tile in layer.tiles)
                 {
-                    var frame = tile.frames[0];
-                    graphics.DrawImage(assets.bitmaps[frame.bitmapPath], frame.position.x, frame.position.y);
+                    RenderSprite(tile.sprite, tile.position, bitmaps, graphics);
+                    
                     if (procedural)
                     {
                         pictureBox.Refresh();
                     }
                 }
+            }
+        }
+
+        private static void RenderSprite(WzData.Assets.Sprite sprite, WzData.Point position, Dictionary<string, System.Drawing.Bitmap> bitmaps, Graphics graphics)
+        {
+            if (sprite.spriteType == WzData.Assets.SpriteType.Bitmap)
+            {
+                var spriteData = (WzData.Assets.BitmapSprite)sprite.spriteData;
+
+                var frame = spriteData.frames[0];
+                graphics.DrawImage(bitmaps[frame.bitmapPath], position.x + frame.offset.x, position.y + frame.offset.y);
             }
         }
     }

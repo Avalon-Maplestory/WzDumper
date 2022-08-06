@@ -12,7 +12,7 @@ namespace WzDumper.Map
 {
     public static class MapDataSaver
     {
-        public static void SaveTo(this WzData.Assets assets, string assetsDirectory)
+        public static void SaveBitmaps(Dictionary<string, System.Drawing.Bitmap> bitmaps, string assetsDirectory)
         {
             if (!Directory.Exists(assetsDirectory))
             {
@@ -20,7 +20,7 @@ namespace WzDumper.Map
             }
 
             Console.WriteLine("Saving bitmaps...");
-            foreach (var (path, bitmap) in assets.bitmaps.Select(pair => (pair.Key, pair.Value)))
+            foreach (var (path, bitmap) in bitmaps.Select(pair => (pair.Key, pair.Value)))
             {
                 var filePath = $"{Path.Combine(assetsDirectory, path)}.png";
                 if (!File.Exists(filePath))
