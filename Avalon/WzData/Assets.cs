@@ -27,8 +27,8 @@ namespace WzDumper.WzData.Assets
 
     public struct Sprite
     {
-        public SpriteType spriteType;
         public string path;
+        public SpriteType spriteType;
         public object spriteData;
     }
 }
